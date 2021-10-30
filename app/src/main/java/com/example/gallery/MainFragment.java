@@ -118,7 +118,7 @@ public class MainFragment extends Fragment {
 //        }
 //    }
 
-    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+    private final ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             new ActivityResultCallback<Boolean>() {
                 @Override
