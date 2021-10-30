@@ -1,20 +1,28 @@
 package com.example.gallery;
 
+import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.gallery.databinding.PhotoViewBinding;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
 public class PhotosRecyclerViewAdapter extends RecyclerView.Adapter<PhotosRecyclerViewAdapter.MyViewHolder> {
+    private Context context;
+    private List<String> images;
+    protected PhotoListener photoListener;
 
-    private int imageId[];
-
-    public PhotosRecyclerViewAdapter(int img[]) {
-        imageId = img;
+    public PhotosRecyclerViewAdapter(Context context,List<String> images,PhotoListener photoListener) {
+        this.context = context;
+        this.images = images;
+        this.photoListener = photoListener;
     }
 
     @NonNull
@@ -29,13 +37,20 @@ public class PhotosRecyclerViewAdapter extends RecyclerView.Adapter<PhotosRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.binding.ivPhotosView.setImageResource(imageId[position]);
+        String image = images.get(position);
+        Glide.with(context).load(image).into(holder.binding.ivPhotosView);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoListener.onPhotoClick(image);
+            }
+        });
     }
 
 
     @Override
     public int getItemCount() {
-        return imageId.length;
+        return images.size();
     }
 
     public static final class MyViewHolder extends RecyclerView.ViewHolder {
@@ -45,4 +60,8 @@ public class PhotosRecyclerViewAdapter extends RecyclerView.Adapter<PhotosRecycl
             this.binding = binding;
         }
     }
+    public interface PhotoListener{
+        void onPhotoClick(String path);
+    }
 }
+
