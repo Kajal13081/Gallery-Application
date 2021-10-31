@@ -34,8 +34,7 @@ We will be adding more features in this app like
 - easily access your most viewed albums from here
 - scrollable albums
 - edit, save and delete images
-- more clean and better UI 
-- and etc.
+- more clean and better UI etc.
 
 # Contributors
 - [Rohit Gupta](https://github.com/vilgad)
