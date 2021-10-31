@@ -51,11 +51,11 @@ public class Full_Image_Activity extends AppCompatActivity {
 //                // putting uri of image to be shared
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageLink));
 //                // adding text to share
-                intent.putExtra(Intent.EXTRA_TEXT, "Add Caption");
+                intent.putExtra(Intent.EXTRA_TEXT, "Sharing Image");
 //                // Add subject Here
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Add Subject");
 //                // setting type to image
-                intent.setType("image/png");
+                intent.setType("image/*");
 //                // calling startActivity() to share
                 startActivity(Intent.createChooser(intent, "Share Via"));
             }
