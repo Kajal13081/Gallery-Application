@@ -44,11 +44,7 @@ public class ScrollingActivity extends AppCompatActivity {
                         R.drawable.java,
                         R.drawable.javascript,
                         R.drawable.kotlin,
-                        R.drawable.python,
-                        R.drawable.ruby,
-                        R.drawable.swift,
-                        R.drawable.typescript,
-                        R.drawable.visual_studio
+                        R.drawable.python
                 };
 
         String desc[] = new String[]{
@@ -57,11 +53,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 "Java",
                 "JavaScript",
                 "Kotlin",
-                "Python",
-                "Ruby",
-                "Swift",
-                "TypeScript",
-                "Visual Studio"
+                "Python"
         };
 
         if (ContextCompat.checkSelfPermission(this,
