@@ -42,7 +42,7 @@ public class PhotosRecyclerViewAdapter extends RecyclerView.Adapter<PhotosRecycl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                photoListener.onPhotoClick(image);
+                photoListener.onPhotoClick(holder.getAdapterPosition());
             }
         });
     }
@@ -61,7 +61,7 @@ public class PhotosRecyclerViewAdapter extends RecyclerView.Adapter<PhotosRecycl
         }
     }
     public interface PhotoListener{
-        void onPhotoClick(String path);
+        void onPhotoClick(int position);
     }
 }
 

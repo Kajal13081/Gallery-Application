@@ -1,6 +1,7 @@
 package com.example.gallery;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -89,9 +90,14 @@ public class ScrollingActivity extends AppCompatActivity {
         images = ImagesGallery.listofImages(this);  // remains to fix -> Images Gallery
         photosRecyclerViewAdapter = new PhotosRecyclerViewAdapter(this, images, new PhotosRecyclerViewAdapter.PhotoListener() {    // remains to fix-> Adapter
             @Override
-            public void onPhotoClick(String path) {
+            public void onPhotoClick(int position) {
                 //Do something with photo
-                Toast.makeText(getApplicationContext(), "" + path, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "" + path, Toast.LENGTH_SHORT).show();
+
+                Intent intent =new Intent(getApplicationContext(),Full_Image_Activity.class);
+                intent.putExtra("image",String.valueOf(images.get(position)));
+                intent.putExtra("pos",position);
+                startActivity(intent);
             }
         });
         binding.photosRecyclerView.setAdapter(photosRecyclerViewAdapter);
