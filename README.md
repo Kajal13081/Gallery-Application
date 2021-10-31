@@ -1,10 +1,10 @@
 # Gallery-Application
-This is a simple image gallery app.
+This is a simple image gallery app with an impressive layout. We have used new and simple concepts to build it and to make its performance better.
 
 # Features
 - The App has inbuilt custom albums where you can store your photos.
-- Users can view the image in full screen.
-- share the image with text to other apps.
+- Users can view the device image in full screen.
+- Share the image with text to other apps/platforms.
 - It is available in dark mode.
 - UI is simple and user friendly.
 
