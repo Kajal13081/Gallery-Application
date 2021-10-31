@@ -2,6 +2,7 @@
 This is a simple image gallery app with an impressive layout. We have used new and simple concepts to build it and to make its performance better.
 
 # Features
+- The app takes your permission to access photos and media on your device.
 - Users can view the device image in full screen.
 - Share the image with text to other apps/platforms.
 - It is available in dark mode.
