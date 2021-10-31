@@ -14,6 +14,7 @@
         android:layout_margin="5dp">
 
         <androidx.cardview.widget.CardView
+<<<<<<< HEAD
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:alwaysDrawnWithCache="false"
@@ -22,6 +23,13 @@
             app:cardElevation="50dp"
             app:cardMaxElevation="5dp"
             app:cardUseCompatPadding="false"
+=======
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:padding="5dp"
+            app:cardCornerRadius="120dp"
+            app:cardElevation="10dp"
+>>>>>>> 646870b5fad6f7e3bc967d85b8210969ba1bbe70
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
