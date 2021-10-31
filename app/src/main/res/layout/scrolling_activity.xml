@@ -44,7 +44,6 @@
             <FrameLayout
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:layout_width="match_parent"
-                android:background="@color/white"
                 android:layout_height="100dp">
 
                 <androidx.recyclerview.widget.RecyclerView
