@@ -12,10 +12,9 @@
         android:roundIcon="@mipmap/ic_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gallery">
-        <activity android:name=".ScrollingActivity" />
         <activity android:name=".Full_Image_Activity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ScrollingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
