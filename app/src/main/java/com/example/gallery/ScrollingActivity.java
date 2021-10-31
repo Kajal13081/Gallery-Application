@@ -39,21 +39,21 @@ public class ScrollingActivity extends AppCompatActivity {
         // dummy data
         int imgs[] = new int[]
                 {
-                        R.drawable.c_plus_plus,
-                        R.drawable.c_sharp,
-                        R.drawable.java,
-                        R.drawable.javascript,
-                        R.drawable.kotlin,
-                        R.drawable.python
+                    R.drawable.camera,
+                        R.drawable.discord,
+                        R.drawable.download,
+                        R.drawable.screenshots,
+                        R.drawable.telegram_images,
+                        R.drawable.whatsapp_images
                 };
 
         String desc[] = new String[]{
-                "C++",
-                "C#",
-                "Java",
-                "JavaScript",
-                "Kotlin",
-                "Python"
+            "Camera",
+                "Discord Images",
+                "Downloads",
+                "ScreenShots",
+                "Telegram Images",
+                "Whatsapp Images"
         };
 
         if (ContextCompat.checkSelfPermission(this,
