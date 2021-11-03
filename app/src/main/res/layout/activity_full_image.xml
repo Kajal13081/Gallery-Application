@@ -8,29 +8,30 @@
 
     <ImageView
         android:id="@+id/fullimageViewid"
-        android:layout_width="match_parent"
-
-        android:layout_height="0dp"
+        android:layout_width="412dp"
+        android:layout_height="587dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"
-        android:layout_width="137dp"
-        android:layout_height="54dp"
-        android:layout_marginBottom="52dp"
-        android:fontFamily="sans-serif-black"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:drawableLeft="@drawable/ic_share"
         android:text="Share"
-        android:textAllCaps="true"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fullimageViewid"
+        app:layout_constraintVertical_bias="0.0"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
