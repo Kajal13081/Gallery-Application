@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gallery.databinding.ScrollingActivityBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollingActivity extends AppCompatActivity {
@@ -39,7 +41,7 @@ public class ScrollingActivity extends AppCompatActivity {
         // dummy data
         int imgs[] = new int[]
                 {
-                    R.drawable.camera,
+                        R.drawable.camera,
                         R.drawable.discord,
                         R.drawable.download,
                         R.drawable.screenshots,
@@ -48,7 +50,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 };
 
         String desc[] = new String[]{
-            "Camera",
+                "Camera",
                 "Discord Images",
                 "Downloads",
                 "ScreenShots",
@@ -69,10 +71,7 @@ public class ScrollingActivity extends AppCompatActivity {
 //        photosRecyclerViewAdapter = new PhotosRecyclerViewAdapter(imgs);
 //        binding.photosRecyclerView.setAdapter(photosRecyclerViewAdapter);
 
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        binding.albumRecyclerView.setLayoutManager(linearLayoutManager);
-        albumRecyclerViewAdapter = new AlbumRecyclerViewAdapter(imgs, desc);
-        binding.albumRecyclerView.setAdapter(albumRecyclerViewAdapter);
+
     }
 
     private void loadImages() {
@@ -80,15 +79,28 @@ public class ScrollingActivity extends AppCompatActivity {
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         binding.photosRecyclerView.setLayoutManager(gridLayoutManager);
         images = ImagesGallery.listofImages(this);  // remains to fix -> Images Gallery
+
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        binding.albumRecyclerView.setLayoutManager(linearLayoutManager);
+        albumRecyclerViewAdapter = new AlbumRecyclerViewAdapter(AlbumConverter.getAlbum(images), new AlbumRecyclerViewAdapter.AlbumListener() {
+            @Override
+            public void onAlbumClick(@NonNull List<String> list) {
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("photos", new ArrayList(list));
+                PhotosActivity.start(ScrollingActivity.this, bundle);
+            }
+        });
+
+        binding.albumRecyclerView.setAdapter(albumRecyclerViewAdapter);
         photosRecyclerViewAdapter = new PhotosRecyclerViewAdapter(this, images, new PhotosRecyclerViewAdapter.PhotoListener() {    // remains to fix-> Adapter
             @Override
             public void onPhotoClick(int position) {
                 //Do something with photo
 //                Toast.makeText(getApplicationContext(), "" + path, Toast.LENGTH_SHORT).show();
 
-                Intent intent =new Intent(getApplicationContext(),Full_Image_Activity.class);
-                intent.putExtra("image",String.valueOf(images.get(position)));
-                intent.putExtra("pos",position);
+                Intent intent = new Intent(getApplicationContext(), Full_Image_Activity.class);
+                intent.putExtra("image", String.valueOf(images.get(position)));
+                intent.putExtra("pos", position);
                 startActivity(intent);
             }
         });
