@@ -34,22 +34,22 @@ class ScrollingActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.scrolling_activity)
 
         // dummy data
-        val imgs = intArrayOf(
-            R.drawable.camera,
-            R.drawable.discord,
-            R.drawable.download,
-            R.drawable.screenshots,
-            R.drawable.telegram_images,
-            R.drawable.whatsapp_images
-        )
-        val desc = arrayOf(
-            "Camera",
-            "Discord Images",
-            "Downloads",
-            "ScreenShots",
-            "Telegram Images",
-            "Whatsapp Images"
-        )
+//        val imgs = intArrayOf(
+//            R.drawable.camera,
+//            R.drawable.discord,
+//            R.drawable.download,
+//            R.drawable.screenshots,
+//            R.drawable.telegram_images,
+//            R.drawable.whatsapp_images
+//        )
+//        val desc = arrayOf(
+//            "Camera",
+//            "Discord Images",
+//            "Downloads",
+//            "ScreenShots",
+//            "Telegram Images",
+//            "Whatsapp Images"
+//        )
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_EXTERNAL_STORAGE

@@ -11,7 +11,7 @@ import com.example.gallery.databinding.PhotoViewBinding
 class PhotosRecyclerViewAdapter(
     private val context: Context,
     private val images: List<String>,
-    protected var photoListener: PhotoListener
+    private var photoListener: PhotoListener
 ) : RecyclerView.Adapter<PhotosRecyclerViewAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding: PhotoViewBinding = DataBindingUtil.inflate(
