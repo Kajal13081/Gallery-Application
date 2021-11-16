@@ -92,7 +92,7 @@ class ScrollingActivity : AppCompatActivity() {
             override fun onPhotoClick(position: Int) {
                 //Do something with photo
 //                Toast.makeText(getApplicationContext(), "" + path, Toast.LENGTH_SHORT).show();
-                val intent = Intent(applicationContext, Full_Image_Activity::class.java)
+                val intent = Intent(applicationContext, FullImageActivity::class.java)
                 intent.putExtra("image", images.get(position))
                 intent.putExtra("pos", position)
                 startActivity(intent)
