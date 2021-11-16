@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Full_Image_Activity">
+    tools:context=".FullImageActivity">
 
     <ImageView
         android:id="@+id/fullimageViewid"
-        android:layout_width="412dp"
-        android:layout_height="587dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,17 +22,14 @@
         android:id="@+id/button"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginTop="50dp"
-        android:drawableLeft="@drawable/ic_share"
+        android:background="@drawable/custom_button"
+        android:drawableStart="@drawable/ic_share"
         android:text="Share"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fullimageViewid"
-        app:layout_constraintVertical_bias="0.0"
-        android:textColor="@color/white"
-        android:background="@drawable/custom_button"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
