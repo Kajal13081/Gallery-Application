@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        tools:context=".ScrollingActivity">
+        tools:context=".ScrollingFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -37,7 +37,7 @@
                         android:text="@string/app_name"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:textSize="20dp"/>
+                        android:textSize="20sp"/>
 
                 </androidx.appcompat.widget.Toolbar>
             </FrameLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/scrollingFragment">
+
+    <fragment
+        android:id="@+id/scrollingFragment"
+        android:name="com.example.gallery.ScrollingFragment"
+        android:label="ScrollingFragment"
+        tools:layout = "@layout/fragment_scrolling">
+        <action
+            android:id="@+id/action_scrollingFragment_to_fullImageFragment"
+            app:destination="@id/fullImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullImageFragment"
+        android:name="com.example.gallery.FullImageFragment"
+        android:label="FullImageFragment"
+        tools:layout="@layout/fragment_full_image">
+        <argument
+            android:name="pos"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="img"
+            app:argType="string"
+            android:defaultValue=" " />
+    </fragment>
+</navigation>

@@ -8,7 +8,7 @@ import java.util.ArrayList
 
 object ImagesGallery {
     @JvmStatic
-    fun listOfImage(context: Context): ArrayList<String> {
+    fun listOfImage(context: ScrollingFragment): ArrayList<String> {
         val cursor: Cursor?
         var column_index_folder_name: Int
         val listOfAllImages = ArrayList<String>()
@@ -19,10 +19,10 @@ object ImagesGallery {
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME
         )
         val orderBy = MediaStore.Video.Media.DATE_TAKEN
-        cursor = context.contentResolver.query(
+        cursor = context.requireActivity().contentResolver.query(
             uri, projection, null,
             null, "$orderBy DESC"
-        )
+        )   // cannot use context.contentResolver in fragment
         val column_index_data: Int = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
 
         //get folder name

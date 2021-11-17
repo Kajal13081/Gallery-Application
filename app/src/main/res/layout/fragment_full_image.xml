@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".FullImageActivity">
+        tools:context=".FullImageFragment">
 
         <ImageView
             android:id="@+id/fullimageViewid"
@@ -22,7 +22,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:contentDescription="@string/app_name" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button"
@@ -30,7 +31,7 @@
             android:layout_height="50dp"
             android:background="@drawable/custom_button"
             android:drawableStart="@drawable/ic_share"
-            android:text="Share"
+            android:text="@string/share"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
