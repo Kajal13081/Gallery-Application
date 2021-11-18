@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_scrollingFragment_to_fullImageFragment"
             app:destination="@id/fullImageFragment" />
+        <action
+            android:id="@+id/action_scrollingFragment_to_photosFragment"
+            app:destination="@id/photosFragment" />
     </fragment>
     <fragment
         android:id="@+id/fullImageFragment"
@@ -27,5 +30,17 @@
             android:name="img"
             app:argType="string"
             android:defaultValue=" " />
+    </fragment>
+    <fragment
+        android:id="@+id/photosFragment"
+        android:name="com.example.gallery.PhotosFragment"
+        android:label="PhotosFragment"
+        tools:layout="@layout/fragment_photos">
+        <argument
+            android:name="lst"
+            app:argType="string[]" />
+        <action
+            android:id="@+id/action_photosFragment_to_fullImageFragment"
+            app:destination="@id/fullImageFragment" />
     </fragment>
 </navigation>

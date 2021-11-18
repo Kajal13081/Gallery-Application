@@ -23,13 +23,6 @@
             </intent-filter>
 
         </activity>
-
-<!--        <activity android:name="" />-->
-        <activity
-            android:name=".PhotosActivity"
-            android:exported="true">
-
-        </activity>
     </application>
 
 </manifest>

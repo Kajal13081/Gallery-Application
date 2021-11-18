@@ -62,9 +62,12 @@ class ScrollingFragment : Fragment() {
             AlbumRecyclerViewAdapter(AlbumConverter.getAlbum(images), object :
                 AlbumRecyclerViewAdapter.AlbumListener {
                 override fun onAlbumClick(list: List<String>) {
-                    val bundle = Bundle()
-                    bundle.putStringArrayList("photos", ArrayList(list))
-                    PhotosActivity.start(requireContext(), bundle)
+//                    val bundle = Bundle()
+//                    bundle.putStringArrayList("photos", ArrayList(list))
+//                    PhotosActivity.start(requireContext(), bundle)
+                    findNavController().navigate(ScrollingFragmentDirections.actionScrollingFragmentToPhotosFragment(
+                        list.toTypedArray()
+                    ))
                 }
             })
         binding.albumRecyclerView.adapter = albumRecyclerViewAdapter
