@@ -44,7 +44,7 @@ class FullImageFragment : Fragment() {
         imageLink = args.img
 
         binding.fullimageViewid.setImageURI(Uri.parse(imageLink))
-        binding.button.setOnClickListener {
+        binding.bottomNavigation.setOnItemSelectedListener {
             val intent = Intent(Intent.ACTION_SEND)
             //                // putting uri of image to be shared
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageLink))
@@ -55,6 +55,7 @@ class FullImageFragment : Fragment() {
             intent.type = "image/*"
             //                // calling startActivity() to share
             startActivity(Intent.createChooser(intent, "Share Via"))
+            true
         }
         // Inflate the layout for this fragment
         return binding.root

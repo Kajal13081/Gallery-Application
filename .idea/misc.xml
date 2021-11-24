@@ -8,6 +8,9 @@
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/album_view.xml" value="0.286231884057971" />
         <entry key="app/src/main/res/drawable/circle.xml" value="0.2722222222222222" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.3564102564102564" />
+        <entry key="app/src/main/res/drawable/item_selector.xml" value="0.3564102564102564" />
+        <entry key="app/src/main/res/drawable/round_corner.xml" value="0.3564102564102564" />
         <entry key="app/src/main/res/layout/activity_full_image.xml" value="0.3458333333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.36875" />
         <entry key="app/src/main/res/layout/activity_photos.xml" value="0.3458333333333333" />
@@ -18,8 +21,10 @@
         <entry key="app/src/main/res/layout/fragment_photos.xml" value="0.3458333333333333" />
         <entry key="app/src/main/res/layout/fragment_scrolling.xml" value="0.3458333333333333" />
         <entry key="app/src/main/res/layout/photo_view.xml" value="0.36875" />
+        <entry key="app/src/main/res/layout/round_corner.xml" value="0.3458333333333333" />
         <entry key="app/src/main/res/layout/scrolling_activity.xml" value="0.38385416666666666" />
         <entry key="app/src/main/res/layout/style.xml" value="0.3458333333333333" />
+        <entry key="app/src/main/res/menu/item_menu.xml" value="0.3458333333333333" />
       </map>
     </option>
   </component>
