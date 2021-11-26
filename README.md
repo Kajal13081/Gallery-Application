@@ -6,34 +6,37 @@ This is a simple image gallery app with an impressive layout. We have used new a
 - Users can view the device image in full screen.
 - Share the image with text to other apps/platforms.
 - It is available in dark mode.
+- Scrollable albums
 - UI is simple and user friendly.
 
 # Screenshots
 
-![screen 2](https://user-images.githubusercontent.com/80222700/139576451-2c2d5a0c-495f-467d-9cba-22bccca23e2a.jpg)
+![screen 2](https://user-images.githubusercontent.com/84396662/143613092-9af3e5f4-e417-4807-8c58-455f46163eff.jpeg)
+
 
 
 ### Full screen view
 
 
-![screen 3](https://user-images.githubusercontent.com/80222700/139576453-206090bf-1acf-46de-abcf-ca78968ad4f7.jpg)
+![screen 3](https://user-images.githubusercontent.com/84396662/143613123-b8aad301-c071-486a-a23f-b9c9d7f3aa11.jpeg)
 
 
-### Sharing Image Screen
+
+### Album View Screen
 
 
-![screen 4](https://user-images.githubusercontent.com/80222700/139576456-14260bd2-64ed-4129-bf3b-119541c48dd0.jpg)
+![screen 4](https://user-images.githubusercontent.com/84396662/143613152-221361dc-d3de-426f-ac77-020ad6d7c8e3.jpeg)
+
 
 
 
 # App apk
-https://drive.google.com/file/d/1FuV6mhrewEOgTV7Mbe7OPbEQSmdZB_c3/view?usp=sharing
+https://drive.google.com/file/d/15HAq15QVSDhy2OHumADXLrUpQObcATOH/view?usp=sharing
 
 # Future Updates
 We will be adding more features in this app like 
 - add images to favourite list and remove from favourite
 - easily access your most viewed albums from here
-- scrollable albums
 - edit, save and delete images
 - more clean and better UI etc.
 
