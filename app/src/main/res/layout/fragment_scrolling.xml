@@ -46,7 +46,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:layout_width="match_parent"
                 android:background="@color/black"
-                android:layout_height="100dp">
+                android:layout_height="140dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/albumRecyclerView"

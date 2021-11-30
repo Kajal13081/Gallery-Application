@@ -39,11 +39,25 @@ class AlbumRecyclerViewAdapter(
                 .load(list.first())
                 .into(binding.ivPhotoAlbum)
 
-            binding.tvTextAlbum.text = title
+            binding.tvTextAlbum.text = albumText(title)
 
             binding.root.setOnClickListener {
                 albumListener.onAlbumClick(list)
             }
+        }
+
+        private fun albumText(str: String): String {
+            var txt = ""
+            var i = str.length-1
+            while (i >= 0) {
+                if (!(str[i].equals('/'))) {
+                    txt += str[i]
+                } else {
+                    i = -1
+                }
+                i--
+            }
+            return txt.reversed()
         }
     }
 
