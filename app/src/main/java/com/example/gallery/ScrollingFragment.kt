@@ -54,7 +54,7 @@ class ScrollingFragment : Fragment() {
         binding.photosRecyclerView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
         binding.photosRecyclerView.layoutManager = gridLayoutManager
-        images = ImagesGallery.listOfImage(this)
+        images = ImagesGallery.listOfImage(requireContext())
         val linearLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.albumRecyclerView.layoutManager = linearLayoutManager

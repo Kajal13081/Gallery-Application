@@ -43,4 +43,13 @@
             android:id="@+id/action_photosFragment_to_fullImageFragment"
             app:destination="@id/fullImageFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/folderFragment"
+        android:name="com.example.gallery.FolderFragment"
+        android:label="FolderFragment"
+        tools:layout="@layout/fragment_folder">
+        <action
+            android:id="@+id/action_folderFragment_to_photosFragment"
+            app:destination="@id/photosFragment" />
+    </fragment>
 </navigation>
