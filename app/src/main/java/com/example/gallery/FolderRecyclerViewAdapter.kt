@@ -6,15 +6,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.gallery.databinding.AlbumViewBinding
+import com.example.gallery.databinding.FolderViewBinding
+import com.example.gallery.databinding.PhotoViewBinding
 
-class AlbumRecyclerViewAdapter(
+class FolderRecyclerViewAdapter(
     private val list: List<Pair<String, List<String>>>,
     private val albumListener: AlbumListener,
-) : RecyclerView.Adapter<AlbumRecyclerViewAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<FolderRecyclerViewAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding: AlbumViewBinding = DataBindingUtil.inflate(
+        val binding: FolderViewBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.album_view, parent, false
+            R.layout.folder_view, parent, false
         )
         return MyViewHolder(binding, albumListener)
     }
@@ -28,7 +30,7 @@ class AlbumRecyclerViewAdapter(
     }
 
     class MyViewHolder(
-        val binding: AlbumViewBinding,
+        val binding: FolderViewBinding,
         private val albumListener: AlbumListener,
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -37,9 +39,9 @@ class AlbumRecyclerViewAdapter(
 
             Glide.with(itemView)
                 .load(list.first())
-                .into(binding.ivPhotoAlbum)
+                .into(binding.ivFolderView)
 
-            binding.tvTextAlbum.text = albumText(title)
+            binding.tvTextFolder.text = albumText(title)
 
             binding.root.setOnClickListener {
                 albumListener.onAlbumClick(list)
