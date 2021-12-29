@@ -12,12 +12,19 @@
         android:layout_height="match_parent"
         tools:context=".FullImageFragment">
 
-        <ImageView
+
+        <com.jsibbold.zoomage.ZoomageView
             android:id="@+id/fullimageViewid"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="fitCenter"
+            android:layout_height="match_parent"
+            app:zoomage_restrictBounds="false"
+            app:zoomage_animateOnReset="true"
+            app:zoomage_autoResetMode="UNDER"
+            app:zoomage_autoCenter="true"
+            app:zoomage_zoomable="true"
+            app:zoomage_translatable="true"
+            app:zoomage_minScale="0.6"
+            app:zoomage_maxScale="8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
