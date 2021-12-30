@@ -26,6 +26,9 @@ class PhotosFragment : Fragment() {
         val args = PhotosFragmentArgs.fromBundle(requireArguments())
         val lst1 = args.lst
 
+        // hiding bottom navigation bar
+        (activity as MainActivity).hideBottomNavBar(true)
+
         binding.photosRecyclerView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
         binding.photosRecyclerView.layoutManager = gridLayoutManager
