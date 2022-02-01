@@ -1,13 +1,13 @@
 package com.example.gallery
 
-import android.content.ContentValues.TAG
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.gallery.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         binding.mainBottomNavigation.setupWithNavController(navController)
+
 
         // to change the fragment in FragmentContainerView
 //        val scrollFrag= ScrollingFragment()
@@ -50,5 +51,18 @@ class MainActivity : AppCompatActivity() {
 //                else -> false
 //            }
 //        }
+    }
+
+    fun hideBottomNavBar(choice: Boolean) {
+        if (choice) {
+            binding.mainBottomNavigation.visibility = View.GONE
+        } else {
+            binding.mainBottomNavigation.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onBackPressed() {
+        hideBottomNavBar(false)
+        super.onBackPressed()
     }
 }

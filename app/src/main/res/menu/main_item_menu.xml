@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/scrollingFragment"
         android:title="@string/photos"
-        android:icon="@drawable/ic_photo"/>
+        android:icon="@drawable/ic_photos"/>
     <item android:id="@+id/folderFragment"
         android:title="@string/albums"
         android:icon="@drawable/ic_folder"/>
