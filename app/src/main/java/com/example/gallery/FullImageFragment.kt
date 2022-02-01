@@ -5,18 +5,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.example.gallery.databinding.FragmentFullImageBinding
+
 
 class FullImageFragment : Fragment() {
     private lateinit var binding: FragmentFullImageBinding
     private var position = 0
     private lateinit var imageLink: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,7 +41,11 @@ class FullImageFragment : Fragment() {
 //            imageLink = bundle.getString("image").toString()
 //        }
 
-        val args = FullImageFragmentArgs.fromBundle(requireArguments()) // passing above values using safe args
+        // hiding bottom navigation bar
+        (activity as MainActivity).hideBottomNavBar(true)
+
+        val args =
+            FullImageFragmentArgs.fromBundle(requireArguments()) // passing above values using safe args
         position = args.pos
         imageLink = args.img
 
