@@ -11,21 +11,21 @@ This is a simple image gallery app with an impressive layout. We have used new a
 
 # Screenshots
 
-![screen 2](https://user-images.githubusercontent.com/84396662/143613092-9af3e5f4-e417-4807-8c58-455f46163eff.jpeg)
+![screen 2](https://user-images.githubusercontent.com/80090908/152097146-cd6c3be0-fdd0-417d-b16a-3410822ffce0.png)
 
 
 
 ### Full screen view
  
 
-![screen 3](https://user-images.githubusercontent.com/84396662/143613123-b8aad301-c071-486a-a23f-b9c9d7f3aa11.jpeg)
+![screen 3](https://user-images.githubusercontent.com/80090908/152097286-210c6069-29cd-4703-a71b-b22a0863e1d7.png)
 
 
 
 ### Album View Screen
 
 
-![screen 4](https://user-images.githubusercontent.com/84396662/143613152-221361dc-d3de-426f-ac77-020ad6d7c8e3.jpeg)
+![screen 4](https://user-images.githubusercontent.com/80090908/152097343-53542573-29b8-460a-90d3-c025c7302794.png)
 
 
 # App apk
