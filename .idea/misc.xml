@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Manjot/AndroidStudioProjects/Gallery-Application/app/src/main/res/layout/fragment_photos.xml" value="0.2351851851851852" />
+        <entry key="..\:/Users/Manjot/AndroidStudioProjects/Gallery-Application/app/src/main/res/layout/activity_main.xml" value="0.2351851851851852" />
+        <entry key="..\:/Users/Manjot/AndroidStudioProjects/Gallery-Application/app/src/main/res/layout/fragment_photos.xml" value="0.1" />
+        <entry key="..\:/Users/Manjot/AndroidStudioProjects/Gallery-Application/app/src/main/res/layout/fragment_scrolling.xml" value="0.25" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/drawable/custom_button.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_full_image.xml" value="0.2875905797101449" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_splash.xml" value="0.1" />
@@ -12,7 +14,6 @@
         <entry key="app/src/main/res/drawable/custom_button.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/ic_folder.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/ic_photo.xml" value="0.3619791666666667" />
-        <entry key="app/src/main/res/drawable/ic_photos.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/ic_share.xml" value="0.3564102564102564" />
         <entry key="app/src/main/res/drawable/item_selector.xml" value="0.3564102564102564" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.3564102564102564" />
