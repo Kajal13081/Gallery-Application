@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/Gallery-Application/app/src/main/res/layout/activity_splashscreen.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/Gallery-Application/app/src/main/res/menu/main_item_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/drawable/custom_button.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_full_image.xml" value="0.2875905797101449" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_splash.xml" value="0.1" />
@@ -45,7 +47,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
