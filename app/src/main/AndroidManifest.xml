@@ -12,10 +12,10 @@
         android:roundIcon="@drawable/snap"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gallery">
-        <activity
+     <!--   <activity
             android:name=".MainActivity2"
             android:exported="false" />
-        <activity
+    -->    <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -24,6 +24,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.codepath.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+
+
     </application>
 
 </manifest>
