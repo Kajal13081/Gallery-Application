@@ -17,9 +17,10 @@
             android:id="@+id/cardView"
             android:layout_width="75dp"
             android:layout_height="75dp"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="100dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="82dp"
             android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="13sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
