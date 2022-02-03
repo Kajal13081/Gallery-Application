@@ -1,8 +1,10 @@
 package com.example.gallery
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,7 @@ class ScrollingFragment : Fragment() {
     private lateinit var images: List<String>
 
     private val My_READ_PERMISSION_CODE = 101
+    private val CAMERA_PERMISSION_CODE = 993
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +50,28 @@ class ScrollingFragment : Fragment() {
         } else {
             loadImages()
         }
+
+        // Camera button for opening camera
+        val cameraButton = binding.cameraFloatingButton
+
+        // OnClickListener for the camera button
+        cameraButton.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+            // Check if permissions have been granted, if not, then request permissions
+            if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA),CAMERA_PERMISSION_CODE)
+                return@setOnClickListener
+            }
+
+            // Check if there exists an Activity to handle the intent, if yes, then send the intent for opening camera
+            if(activity?.let { it1 -> intent.resolveActivity(it1.packageManager) } !=null)
+            {
+                startActivity(intent)
+            }
+        }
+
         return binding.root
     }
 
@@ -91,6 +116,29 @@ class ScrollingFragment : Fragment() {
             Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if(grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED)
+        {
+            // Check if camera permissions were requested and if they have been granted now
+            if(requestCode==CAMERA_PERMISSION_CODE && ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED)
+            {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                // Check if there exists an Activity to handle the intent, if yes, then send the intent for opening camera
+                if(activity?.let { intent.resolveActivity(it.packageManager) } !=null)
+                {
+                    startActivity(intent)
+                }
+            }
         }
     }
 }
