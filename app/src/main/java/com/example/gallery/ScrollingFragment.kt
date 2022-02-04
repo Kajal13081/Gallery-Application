@@ -29,7 +29,7 @@ class ScrollingFragment : Fragment() {
     private lateinit var photosRecyclerViewAdapter: PhotosRecyclerViewAdapter
     private lateinit var albumRecyclerViewAdapter: AlbumRecyclerViewAdapter
     private lateinit var images: List<String>
-
+issue#16
 issue#16
 
     private val requestPermissionLauncher =
@@ -48,6 +48,27 @@ issue#16
 
     private val My_READ_PERMISSION_CODE = 101
     private val CAMERA_PERMISSION_CODE = 993
+ JWOC
+
+JWOC
+
+private val requestPermissionLauncher =
+    registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        isGranted->
+        if(isGranted)
+        {
+            startCamera()
+        }
+        else{
+            Snackbar.make(binding.root,
+            R.string.camera_permission_denied,
+            Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private val My_READ_PERMISSION_CODE = 101
+    private val CAMERA_PERMISSION_CODE = 993
+JWOC
  JWOC
 
     override fun onCreateView(
@@ -72,6 +93,7 @@ issue#16
         else
             requestCameraPermission2()
     }
+ issue#16
 
     private fun requestCameraPermission2() {
 
@@ -88,6 +110,24 @@ issue#16
 
     }
 
+
+
+    private fun requestCameraPermission2() {
+
+        if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
+            Snackbar.make(binding.root,
+            R.string.permission_required,
+            Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok){
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }.show()
+        }else
+        {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+
+    }
+
+ JWOC
 
     private val requestReadPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -109,6 +149,7 @@ issue#16
         super.onViewCreated(view, savedInstanceState)
 
         showImages()
+issue#16
     }
 
     private fun showImages() {
@@ -135,6 +176,34 @@ issue#16
 
     }
 
+
+    }
+
+    private fun showImages() {
+        if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+            loadImages()
+        }
+        else
+            requestReadPermission()
+
+    }
+
+    private fun requestReadPermission() {
+        if(shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
+            Snackbar.make(binding.root,
+                R.string.permission_required,
+                Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok){
+                requestReadPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }.show()
+        }else
+        {
+            requestReadPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+
+    }
+
+JWOC
     private fun startCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Check if there exists an Activity to handle the intent, if yes, then send the intent for opening camera
