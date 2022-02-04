@@ -58,6 +58,9 @@ dependencies {
 
     // https://github.com/jsibbold/zoomage
     implementation 'com.jsibbold:zoomage:1.3.1'
+
+    //LottieFiles Animated SplashScreen
+    implementation 'com.airbnb.android:lottie:4.2.2'
 }
 repositories {
     mavenCentral()
