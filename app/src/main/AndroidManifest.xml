@@ -13,11 +13,10 @@
         android:roundIcon="@drawable/snap"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gallery">
-JWOC
      <!--   <activity
             android:name=".MainActivity2"
             android:exported="false" />
-    -->    <activity
+    <activity -->
 
         <activity
             android:name=".SplashScreen"
@@ -29,7 +28,6 @@ JWOC
             </intent-filter>
         </activity>
         <activity
- JWOC
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -38,7 +36,6 @@ JWOC
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
- JWOC
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.codepath.fileprovider"

@@ -66,10 +66,20 @@ class FullImageFragment : Fragment() {
 
         binding.bottomNavigation.setOnItemSelectedListener {
             val intent = Intent(Intent.ACTION_SEND)
-            //                // putting uri of image to be shared
-            //this image link must be accessible by other apps
-            //local uri of the image loaded in imageview by the external api glide (Earlier because of the glide, other app weren't able to access our file uri)
 
+
+            // putting uri of image to be shared
+            //this image link must be accessible by other apps( see permission in AndroidManifest.xml inside provider tag)
+/*
+Explanation of Coding...
+*       you have selected a file from media Gallery
+*You have a Uri from that file.
+* But when you want to launch share intent, you have to pass a FileProvider Uri into the intent.
+* But you can’t use the file Uri you have from Media folder. It is not under your app authority
+* and it is not under your app’s file path. If you want to open the file, you have to copy the
+*  file under your app’s file path. And get that copy file Uri with FileProvider and pass it to the intent
+*
+ */
             //Please note this is decreasing app performance, running in the external thread might improve performance
             intent.putExtra(Intent.EXTRA_STREAM,fileUri )
             //                // adding text to share
@@ -111,7 +121,7 @@ class FullImageFragment : Fragment() {
     //As we need to give external app permission to access our uri, we need to create a local file and get the uri from there .
     /**
      * This method extract bitmap from imageview and return Uri accessible by any app.
-     * We are saving files to (/Android/data/[packagename]/files)
+     * We are saving files to (/Android/data/packagename/files)
      * Storage Call : Context.getExternalFilesDir() = data can be read/write by the app,
      * any apps granted with READ_STORAGE permission can read too, deleted when uninstalled (/Android/data/[packagename]/files)
      * @param imageview imageview from which we need to extract bitmap
