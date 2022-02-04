@@ -5,4 +5,9 @@
     <string name="share">Share</string>
     <string name="photos">Photos</string>
     <string name="albums">Albums</string>
+    <string name="permission_required">To use this feature, you must enable the permission.</string>
+    <string name="ok">Ok</string>
+    <string name="external_storage_permission">To get the images app need Read Permission.</string>
+    <string name="camera_permission_denied">Camera Permission Denied</string>
+    <string name="read_permission_denied">Read Permission is denied</string>
 </resources>
