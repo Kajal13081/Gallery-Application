@@ -11,4 +11,8 @@
     <color name="grey">#36454F</color>
     <color name="ghost_white">#F8F8FF</color>
     <color name="blue">#00BCD4</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#000000</color>
+    <color name="grayish">#A9A9A9</color>
 </resources>
