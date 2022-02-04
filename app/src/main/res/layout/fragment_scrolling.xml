@@ -6,9 +6,7 @@
     <data>
 
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -70,8 +68,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/camera_floating_button"
             android:layout_width="wrap_content"
@@ -79,15 +75,15 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
             app:srcCompat="@drawable/camera_icon"
-            app:maxImageSize="35dp"
+            app:maxImageSize="34dp"
             app:elevation="100dp"
             app:backgroundTint="@color/transparent"
             app:tint="@null"
+            android:layout_gravity="bottom|end"
             app:fabCustomSize="60dp"
             app:borderWidth="1dp"
             android:background="@drawable/fab_background"
-            app:backgroundTintMode="src_over"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:backgroundTintMode="src_over" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

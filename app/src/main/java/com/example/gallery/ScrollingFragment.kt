@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +29,7 @@ class ScrollingFragment : Fragment() {
     private lateinit var albumRecyclerViewAdapter: AlbumRecyclerViewAdapter
     private lateinit var images: List<String>
 
+JWOC
 
 private val requestPermissionLauncher =
     registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -44,6 +44,10 @@ private val requestPermissionLauncher =
             Snackbar.LENGTH_SHORT).show()
         }
     }
+
+    private val My_READ_PERMISSION_CODE = 101
+    private val CAMERA_PERMISSION_CODE = 993
+JWOC
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
