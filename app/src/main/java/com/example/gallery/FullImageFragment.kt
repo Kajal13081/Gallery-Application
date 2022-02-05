@@ -1,6 +1,7 @@
 package com.example.gallery
 
 import android.Manifest
+import android.app.ActionBar
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
@@ -31,7 +33,7 @@ class FullImageFragment : Fragment() {
     private lateinit var imageLink: String
 
     private var fileUri : Uri? = null
-
+    private var barsHidden : Boolean = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -90,6 +92,25 @@ Explanation of Coding...
             //                // calling startActivity() to share
             startActivity(Intent.createChooser(intent, "Share Via"))
             true
+        }
+
+        val bottomBar = binding.bottomNavigation
+        val fullImage = binding.fullimageViewid
+        fullImage.setOnClickListener {
+            if(barsHidden)
+            {
+//                bottomBar.visibility = View.VISIBLE
+                bottomBar.animate().translationY(0F)
+                (activity as MainActivity).window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                barsHidden = false
+            }
+            else
+            {
+                bottomBar.animate().translationY(bottomBar.getHeight().toFloat())
+//                bottomBar.visibility = View.GONE
+                (activity as MainActivity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                barsHidden = true;
+            }
         }
         // Inflate the layout for this fragment
         return binding.root
