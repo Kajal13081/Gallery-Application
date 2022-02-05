@@ -96,22 +96,26 @@ Explanation of Coding...
 
         val bottomBar = binding.bottomNavigation
         val fullImage = binding.fullimageViewid
+
+        // OnClickListener for the image
         fullImage.setOnClickListener {
+            // If bars are already hidden then make them appear
             if(barsHidden)
             {
-//                bottomBar.visibility = View.VISIBLE
                 bottomBar.animate().translationY(0F)
                 (activity as MainActivity).window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 barsHidden = false
             }
+
+            // If bars are not hidden then hide them
             else
             {
                 bottomBar.animate().translationY(bottomBar.getHeight().toFloat())
-//                bottomBar.visibility = View.GONE
                 (activity as MainActivity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 barsHidden = true;
             }
         }
+
         // Inflate the layout for this fragment
         return binding.root
     }
