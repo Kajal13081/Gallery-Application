@@ -1,10 +1,8 @@
 package com.example.gallery
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,9 +23,14 @@ class FolderFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_folder, container, false)
         loadImages()
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
         return binding.root
     }
-
+    // Sort option
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.sort_menu, menu)
+        super.onCreateOptionsMenu(menu,inflater)
+    }
     private fun loadImages() {
         binding.folderRecyclerView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 2)
