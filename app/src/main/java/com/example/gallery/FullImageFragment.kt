@@ -5,6 +5,7 @@ import android.app.ActionBar
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -21,7 +22,12 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.gallery.databinding.FragmentFullImageBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -50,6 +56,7 @@ class FullImageFragment : Fragment() {
             PackageManager.PERMISSION_GRANTED
         )
 
+
 //        val bundle = requireActivity().intent.extras        // cant use intent directly in fragment
 //        if (bundle != null) {
 //            position = bundle.getInt("pos", 0)
@@ -64,11 +71,11 @@ class FullImageFragment : Fragment() {
         position = args.pos
         imageLink = args.img
 
+
         binding.fullimageViewid.setImageURI(Uri.parse(imageLink))
 
         binding.bottomNavigation.setOnItemSelectedListener {
             val intent = Intent(Intent.ACTION_SEND)
-
 
             // putting uri of image to be shared
             //this image link must be accessible by other apps( see permission in AndroidManifest.xml inside provider tag)
@@ -82,7 +89,9 @@ Explanation of Coding...
 *  file under your app’s file path. And get that copy file Uri with FileProvider and pass it to the intent
 *
  */
-            //Please note this is decreasing app performance, running in the external thread might improve performance
+
+
+
             intent.putExtra(Intent.EXTRA_STREAM,fileUri )
             //                // adding text to share
             //                // Add subject Here
@@ -120,33 +129,24 @@ Explanation of Coding...
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        //Just to increase the app performance we are creating file earlier for sharing although this is bad way of implementing things.
-        lifecycleScope.launchWhenCreated {
-            fileUri = getBitmapFromDrawable(binding.fullimageViewid)
-        }
-
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
 
         //Once the fragment gets destroyed , we do not need the file created earlier using method getBitmapFromDrawable()
         //So, removing the file (We don't wanna increase app's user data storage for every share by user)
-       if (fileUri != null) {
+        if (fileUri != null) {
             context?.contentResolver?.delete(fileUri!!,null,null)
         }
 
     }
 
+
+
     //As we need to give external app permission to access our uri, we need to create a local file and get the uri from there .
     /**
      * This method extract bitmap from imageview and return Uri accessible by any app.
-     * We are saving files to (/Android/data/packagename/files)
+     * We are saving files to (/Android/data/[packagename]/files)
      * Storage Call : Context.getExternalFilesDir() = data can be read/write by the app,
      * any apps granted with READ_STORAGE permission can read too, deleted when uninstalled (/Android/data/[packagename]/files)
      * @param imageview imageview from which we need to extract bitmap
@@ -161,6 +161,7 @@ Explanation of Coding...
         var bmp: Bitmap? = if (drawable is BitmapDrawable) {
             (imageview.getDrawable() as BitmapDrawable).bitmap
         } else {
+            Log.d("myTag","Drawable is null")
             return null
         }
 
@@ -171,7 +172,9 @@ Explanation of Coding...
             val file = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                 "share_image_" + System.currentTimeMillis() + ".png")
             val out = FileOutputStream(file)
-            bmp?.compress(Bitmap.CompressFormat.PNG, 90, out)
+
+
+            bmp?.compress(Bitmap.CompressFormat.JPEG, 80, out)
             out.close()
 
             //as per documentation, Uri.fromFile(file) will fail for api>=24, using file provider instead
@@ -187,5 +190,14 @@ Explanation of Coding...
             e.message
         }
         return bmpUri
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            fileUri = getBitmapFromDrawable(binding.fullimageViewid)
+        }
+
     }
 }

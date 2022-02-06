@@ -5,13 +5,12 @@ package com.example.gallery
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.Image
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -30,24 +29,24 @@ class ScrollingFragment : Fragment() {
     private lateinit var images: List<String>
 
 
-private val requestPermissionLauncher =
-    registerForActivityResult(ActivityResultContracts.RequestPermission()){
-        isGranted->
-        if(isGranted)
-        {
-            startCamera()
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()){
+                isGranted->
+            if(isGranted)
+            {
+                startCamera()
+            }
+            else{
+                Snackbar.make(binding.root,
+                    R.string.camera_permission_denied,
+                    Snackbar.LENGTH_SHORT).show()
+            }
         }
-        else{
-            Snackbar.make(binding.root,
-            R.string.camera_permission_denied,
-            Snackbar.LENGTH_SHORT).show()
-        }
-    }
 
-       override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View
+    ): View?
     {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scrolling, container, false)
 
@@ -55,7 +54,35 @@ private val requestPermissionLauncher =
             showCameraPreview()
         }
 
+        setHasOptionsMenu(true)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.sort_menu, menu)
+        super.onCreateOptionsMenu(menu,inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.dateModifiedSorting ->
+            {
+                loadImages(ImagesGallery.SortOrder.Modified)
+            }
+            R.id.dateSorting ->{
+                loadImages(ImagesGallery.SortOrder.Date)
+
+            }
+            R.id.nameSorting -> {
+                loadImages(ImagesGallery.SortOrder.Name)
+            }
+            R.id.sizeSorting ->{
+                loadImages(ImagesGallery.SortOrder.Size)
+            }
+        }
+        return true
     }
 
     private fun showCameraPreview() {
@@ -71,8 +98,8 @@ private val requestPermissionLauncher =
 
         if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
             Snackbar.make(binding.root,
-            R.string.permission_required,
-            Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok){
+                R.string.permission_required,
+                Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok){
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }.show()
         }else
@@ -88,7 +115,7 @@ private val requestPermissionLauncher =
                 isGranted->
             if(isGranted)
             {
-                loadImages()
+                loadImages(ImagesGallery.SortOrder.Date)
             }
             else{
                 Snackbar.make(binding.root,
@@ -107,7 +134,7 @@ private val requestPermissionLauncher =
 
     private fun showImages() {
         if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-            loadImages()
+            loadImages(ImagesGallery.SortOrder.Name)
         }
         else
             requestReadPermission()
@@ -139,13 +166,15 @@ private val requestPermissionLauncher =
 
 
 
-    private fun loadImages() {
+    private fun loadImages(sortOrder: ImagesGallery.SortOrder) {
 
         Log.i("myTag","This method has been called after permission enabled")
         binding.photosRecyclerView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
         binding.photosRecyclerView.layoutManager = gridLayoutManager
-        images = ImagesGallery.listOfImage(requireContext())
+
+        images = ImagesGallery.listOfSortedImages(requireContext(),sortOrder)
+
         val linearLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.albumRecyclerView.layoutManager = linearLayoutManager

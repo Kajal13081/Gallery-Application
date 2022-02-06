@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<item android:id="@+id/sort"
+    android:title="@string/sort"
+    app:showAsAction="never">
+    <menu>
+        <group android:id="@+id/group1">
+            <item android:id="@+id/nameSorting"
+                android:title="@string/name"
+                app:showAsAction="never"
+                />
+            <item android:id="@+id/dateSorting"
+                android:title="@string/created_date"
+                app:showAsAction="never"/>
+
+            <item android:title="@string/dateModified"
+                android:id="@+id/dateModifiedSorting"
+                app:showAsAction="never"/>
+
+            <item android:id="@+id/sizeSorting"
+                android:title="@string/Size" app:showAsAction="never"/>
+        </group>
+    </menu>
+
+</item>
+
+</menu>

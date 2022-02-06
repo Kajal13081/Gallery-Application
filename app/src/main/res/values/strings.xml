@@ -10,4 +10,9 @@
     <string name="external_storage_permission">To get the images app need Read Permission.</string>
     <string name="camera_permission_denied">Camera Permission Denied</string>
     <string name="read_permission_denied">Read Permission is denied</string>
+    <string name="name">Name</string>
+    <string name="created_date">Created Date</string>
+    <string name="dateModified">Last Updated</string>
+    <string name="sort">Sort</string>
+    <string name="Size">Size</string>
 </resources>
