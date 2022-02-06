@@ -2,6 +2,7 @@ package com.example.gallery
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         hideBottomNavBar(false)
         super.onBackPressed()
     }
