@@ -116,6 +116,7 @@ class ScrollingFragment : Fragment() {
             if(isGranted)
             {
                 loadImages(ImagesGallery.SortOrder.Date)
+
             }
             else{
                 Snackbar.make(binding.root,
@@ -135,6 +136,7 @@ class ScrollingFragment : Fragment() {
     private fun showImages() {
         if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
             loadImages(ImagesGallery.SortOrder.Name)
+            ImagesGallery.getImages(requireContext(),ImagesGallery.SortOrder.Date)
         }
         else
             requestReadPermission()

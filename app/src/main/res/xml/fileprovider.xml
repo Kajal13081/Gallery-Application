@@ -2,6 +2,26 @@
 <paths>
     <external-files-path
         name="images"
-        path="Pictures"/>
+        path="."/>
+
+    <files-path
+        name="files"
+        path="."/>
+
+    <external-path
+        name="external"
+        path="."/>
+
+
+    <!--Thanks to Binay |binayshaw7777, I got to know these two magical words root-path
+    this enable us free access to entire memory structure which in turn enabled to simplify share feature.
+    Please Note : IDE Lint marks this inappropriate & Also, nothing is mentioned in Documentation about root-path tag.
+    -->
+
+    <root-path
+        name="root"
+        path="."
+        />
+
 
 </paths>
