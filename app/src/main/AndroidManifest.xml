@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/snap"
+        android:icon="@drawable/snap_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/snap"
+        android:roundIcon="@drawable/snap_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gallery">
      <!--   <activity
