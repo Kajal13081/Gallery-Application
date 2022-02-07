@@ -13,7 +13,7 @@ object ImagesGallery {
 
 
 
-    @JvmStatic
+   /* @JvmStatic
     fun listOfImage(context: Context): ArrayList<String> {
         val listOfAllImages = ArrayList<String>()
         var absolutePathOfImage: String
@@ -36,13 +36,13 @@ object ImagesGallery {
         val  cursor1 = context.contentResolver.query(uri,
             projection1,null, null, orderByName )
 
-        /* val orderBy = MediaStore.Video.Media.DATE_TAKEN
+        *//* val orderBy = MediaStore.Video.Media.DATE_TAKEN
          cursor = context.contentResolver.query(
              uri, projection, null,
              null, "$orderBy DESC"
          )   // cannot use context.contentResolver in fragment
 
-        */ val column_index_data: Int = cursor1!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+        *//* val column_index_data: Int = cursor1!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
 
         //get folder name
         //column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
@@ -54,7 +54,7 @@ object ImagesGallery {
 
         return listOfAllImages
     }
-
+*/
     enum class SortOrder{
         Name,
         Date,
@@ -84,14 +84,14 @@ object ImagesGallery {
             SortOrder.Date -> {
                 orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC"
             }
-            SortOrder.Modified ->{
-                orderBy = MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
+            SortOrder.Name ->{
+                orderBy = MediaStore.Images.ImageColumns.DISPLAY_NAME + " ASC"
             }
             SortOrder.Size ->{
                 orderBy = MediaStore.Images.ImageColumns.SIZE + " DESC"
             }
-            else ->{
-                orderBy = MediaStore.Images.ImageColumns.DISPLAY_NAME + " ASC"
+            SortOrder.Modified ->{
+                orderBy = MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
             }
         }
 
@@ -120,7 +120,7 @@ object ImagesGallery {
     * @return ImageData POJO having name of the image and uri
     *
      */
-    @JvmStatic
+  /*  @JvmStatic
     fun getImages(context: Context,sortOrder: SortOrder) : ArrayList<ImageData>{
 
         var imageDataList : ArrayList<ImageData> = ArrayList()
@@ -160,8 +160,8 @@ object ImagesGallery {
             cursor->
             //if no error occurred but there is no images then do nothing
             if(cursor.count!= 0){
-                val columnId = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                val columnName = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                val columnId = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                val columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
                 while(cursor.moveToNext()){
                     val imageUri = ContentUris.withAppendedId(external_uri,cursor.getLong(columnId))
@@ -181,5 +181,5 @@ object ImagesGallery {
                 var uri : Uri
     )
 
-
+*/
 }

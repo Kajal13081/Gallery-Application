@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_folder.xml" value="0.11367753623188406" />
         <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_full_image.xml" value="0.11367753623188406" />
+        <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_photos.xml" value="0.11367753623188406" />
+        <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_scrolling.xml" value="0.11367753623188406" />
+        <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/menu/full_image_frag_item_menu.xml" value="0.1" />
+        <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/menu/main_item_menu.xml" value="0.1" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/drawable/custom_button.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_full_image.xml" value="0.2875905797101449" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_splash.xml" value="0.1" />

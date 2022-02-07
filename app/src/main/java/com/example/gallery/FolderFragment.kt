@@ -6,10 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gallery.databinding.FragmentFolderBinding
-import com.example.gallery.databinding.FragmentScrollingBinding
 
 class FolderFragment : Fragment() {
     private lateinit var binding: FragmentFolderBinding
@@ -21,7 +19,7 @@ class FolderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_folder, container, false)
-        loadImages()
+        loadImages(ImagesGallery.SortOrder.Modified)
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         return binding.root
@@ -31,11 +29,38 @@ class FolderFragment : Fragment() {
         inflater.inflate(R.menu.sort_menu, menu)
         super.onCreateOptionsMenu(menu,inflater)
     }
-    private fun loadImages() {
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.dateModifiedSorting ->
+            {
+                loadImages(ImagesGallery.SortOrder.Modified)
+            }
+            R.id.dateSorting ->{
+                loadImages(ImagesGallery.SortOrder.Date)
+
+            }
+            R.id.nameSorting -> {
+                loadImages(ImagesGallery.SortOrder.Name)
+            }
+            R.id.sizeSorting ->{
+                loadImages(ImagesGallery.SortOrder.Size)
+            }
+        }
+        return true
+    }
+
+
+    private fun loadImages(sortOrder: ImagesGallery.SortOrder) {
         binding.folderRecyclerView.setHasFixedSize(true)
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 2)
         binding.folderRecyclerView.layoutManager = gridLayoutManager
-        images = ImagesGallery.listOfImage(requireContext())
+
+        images = ImagesGallery.listOfSortedImages(requireContext(),sortOrder)
+
+    //    images = ImagesGallery.listOfImage(requireContext())
 
         folderRecyclerViewAdapter =
             FolderRecyclerViewAdapter(AlbumConverter.getAlbum(images), object :

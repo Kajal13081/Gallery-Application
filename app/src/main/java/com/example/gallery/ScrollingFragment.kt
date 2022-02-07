@@ -64,27 +64,6 @@ class ScrollingFragment : Fragment() {
         super.onCreateOptionsMenu(menu,inflater)
     }*/
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        when(item.itemId){
-            R.id.dateModifiedSorting ->
-            {
-                loadImages(ImagesGallery.SortOrder.Modified)
-            }
-            R.id.dateSorting ->{
-                loadImages(ImagesGallery.SortOrder.Date)
-
-            }
-            R.id.nameSorting -> {
-                loadImages(ImagesGallery.SortOrder.Name)
-            }
-            R.id.sizeSorting ->{
-                loadImages(ImagesGallery.SortOrder.Size)
-            }
-        }
-        return true
-    }
-
     private fun showCameraPreview() {
 
         if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
@@ -135,8 +114,8 @@ class ScrollingFragment : Fragment() {
 
     private fun showImages() {
         if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-            loadImages(ImagesGallery.SortOrder.Name)
-            ImagesGallery.getImages(requireContext(),ImagesGallery.SortOrder.Date)
+            loadImages(ImagesGallery.SortOrder.Modified)
+        //    ImagesGallery.getImages(requireContext(),ImagesGallery.SortOrder.Date)
         }
         else
             requestReadPermission()
