@@ -12,10 +12,14 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.gallery.databinding.FragmentFullImageBinding
+import com.example.gallery.databinding.FullImageItemLayoutBinding
 
 
 class FullImageFragment : Fragment() {
     private lateinit var binding: FragmentFullImageBinding
+   // private lateinit var binding1:FullImageItemLayoutBinding
+
+
     private var position = 0
     private lateinit var imageLink: String
 
@@ -26,6 +30,10 @@ class FullImageFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_full_image, container, false
         )
+       /* binding1 = DataBindingUtil.inflate(
+                inflater, R.layout.full_image_item_layout, container, false
+        )*/
+
         ActivityCompat.requestPermissions(
             requireActivity(),
             arrayOf(
@@ -49,7 +57,6 @@ class FullImageFragment : Fragment() {
         position = args.pos
         imageLink = args.img
 
-        binding.fullimageViewid.setImageURI(Uri.parse(imageLink))
         binding.bottomNavigation.setOnItemSelectedListener {
             val intent = Intent(Intent.ACTION_SEND)
             //                // putting uri of image to be shared
@@ -61,9 +68,28 @@ class FullImageFragment : Fragment() {
             intent.type = "image/*"
             //                // calling startActivity() to share
             startActivity(Intent.createChooser(intent, "Share Via"))
-            true
+             true
         }
+        val list= context?.let { ImagesGallery.listOfImage(it) }
+        var currPosition= list?.indexOf(imageLink)
+
+        var adapter= list?.let { currPosition?.let { it1 -> FullImageAdapter(context, it) } }
         // Inflate the layout for this fragment
+         binding.viewPager.adapter= adapter
+
+        if (list != null) {
+            binding.viewPager.setCurrentItem(list.indexOf(imageLink))
+        }
+
         return binding.root
     }
-}
+
+    override fun onStart() {
+        super.onStart()
+        //binding1.fullimageViewid.setImageURI(Uri.parse(imageLink))
+       //
+
+        }
+
+
+    }
