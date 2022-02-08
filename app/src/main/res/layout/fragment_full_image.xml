@@ -45,5 +45,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/full_image_frag_item_menu" />
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            app:layout_constraintEnd_toEndOf="@+id/fullimageViewid"
+            app:layout_constraintStart_toStartOf="@+id/fullimageViewid"
+            app:layout_constraintTop_toTopOf="@+id/fullimageViewid" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

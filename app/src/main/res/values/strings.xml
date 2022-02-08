@@ -15,4 +15,10 @@
     <string name="dateModified">Last Updated</string>
     <string name="sort">Sort</string>
     <string name="Size">Size</string>
+    <string name="saveUrl">Store Url</string>
+    <string name="ref_store">Reference Stored</string>
+    <string name="ref_store_failed">Unable To Store Reference</string>
+    <string name="file_upload_failed">File Upload Failed</string>
+    <string name="cancelSnackbar">Cancel</string>
+    <string name="upload_done">Successfully Uploaded to Cloud</string>
 </resources>

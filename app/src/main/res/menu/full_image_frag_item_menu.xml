@@ -3,4 +3,8 @@
     <item android:id="@+id/nav_share"
         android:title="Share"
         android:icon="@drawable/ic_share"/>
+    <item android:id="@+id/upload_image"
+            android:title="Upload"
+        android:icon="@drawable/ic_baseline_cloud_upload_24"
+        />
 </menu>
