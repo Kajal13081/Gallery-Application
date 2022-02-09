@@ -16,11 +16,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        supportActionBar?.hide()
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         binding.mainBottomNavigation.setupWithNavController(navController)
-
 
         // to change the fragment in FragmentContainerView
 //        val scrollFrag= ScrollingFragment()
@@ -53,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
     }
-
     fun hideBottomNavBar(choice: Boolean) {
         if (choice) {
             binding.mainBottomNavigation.visibility = View.GONE
