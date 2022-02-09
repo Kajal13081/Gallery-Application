@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">Snap</string>
+    <string name="app_name">Gallery</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="share">Share</string>
     <string name="photos">Photos</string>
     <string name="albums">Albums</string>
+    <string name="delete_image_x"><![CDATA[" <![CDATA[Delete the image <b>%1$s</b>?]]></string>
+    <string name="delete_image">Delete Image</string>
+    <string name="cancel">Cancel</string>
     <string name="permission_required">To use this feature, you must enable the permission.</string>
     <string name="ok">Ok</string>
     <string name="external_storage_permission">To get the images app need Read Permission.</string>

@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.gallery.databinding.FragmentFullImageBinding
-import com.google.android.gms.tasks.Continuation
+import java.io.File
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
@@ -29,8 +29,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
-import java.io.File
-import java.util.*
 import kotlin.collections.HashMap
 
 
@@ -65,33 +63,33 @@ class FullImageFragment : Fragment() {
 
         binding.fullimageViewid.setImageURI(Uri.parse(imageLink))
 
-
-
         binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_share -> {
+                    val intent = Intent(Intent.ACTION_SEND)
 
-            if(it.itemId== R.id.nav_share){
-                val intent = Intent(Intent.ACTION_SEND)
+                    val file = File(Uri.parse(imageLink).path)
+                    val uri = FileProvider.getUriForFile(requireContext(),
+                        "com.codepath.fileprovider",
+                        file)
+                    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-                val file = File(Uri.parse(imageLink).path)
-                val uri = FileProvider.getUriForFile(requireContext(),
-                    "com.codepath.fileprovider",
-                    file)
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                intent.putExtra(Intent.EXTRA_STREAM,uri )
-                //                // adding text to share
-                //                // Add subject Here
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Shared using Snap!!")
-                //                // setting type to image
-                intent.type = "image/*"
-                //                // calling startActivity() to share
-                startActivity(Intent.createChooser(intent, "Share Via"))
-
-            }else if(it.itemId == R.id.upload_image){
-
+                    intent.putExtra(Intent.EXTRA_STREAM,uri )
+                    //                // adding text to share
+                    //                // Add subject Here
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Shared using Snap!!")
+                    //                // setting type to image
+                    intent.type = "image/*"
+                    //                // calling startActivity() to share
+                    startActivity(Intent.createChooser(intent, "Share Via"))
+                }
+                R.id.delete -> {
+                    DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
+                }
+                R.id.upload_image->{
                     uploadToFirebase(imageLink)
                     it.setIcon(R.drawable.ic_baseline_cloud_done_24)
-
+                }
             }
                         true
         }
@@ -124,7 +122,7 @@ class FullImageFragment : Fragment() {
             // If bars are not hidden then hide them
             else
             {
-                bottomBar.animate().translationY(bottomBar.getHeight().toFloat())
+                bottomBar.animate().translationY(bottomBar.height.toFloat())
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
                     activity?.window?.let {
@@ -173,32 +171,30 @@ class FullImageFragment : Fragment() {
         val mimeType = requireActivity().contentResolver.getType(fileUri)
 
 
-        var metadata = storageMetadata {
+        val metadata = storageMetadata {
             contentType = mimeType
         }
 
         val storage = Firebase.storage
         val storageRef = storage.reference
 
-        var ref : StorageReference? = storageRef.child("upload/"+ System.currentTimeMillis().toString())
+        val ref : StorageReference = storageRef.child("upload/"+ System.currentTimeMillis().toString())
 
         //uploading file with metadata
-        var uploadTask = ref?.putFile(fileUri,metadata)
+        val uploadTask = ref.putFile(fileUri,metadata)
 
-
-
-        uploadTask?.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+        uploadTask.continueWithTask(com.google.android.gms.tasks.Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
                     throw it
                 }
             }
-            return@Continuation ref?.downloadUrl
-        })?.addOnCompleteListener { task ->
+            return@Continuation ref.downloadUrl
+        }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 binding.progressBar.visibility = View.GONE
 
-       Snackbar.make(binding.root,getString(R.string.upload_done),Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.root,getString(R.string.upload_done),Snackbar.LENGTH_LONG)
                     .setAction(R.string.saveUrl){
                         saveUploadedImageUri(task.result.toString())
                     }
