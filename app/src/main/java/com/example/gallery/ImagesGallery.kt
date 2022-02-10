@@ -12,8 +12,8 @@ import java.util.ArrayList
 object ImagesGallery {
 
 
-
-   /* @JvmStatic
+/*
+   @JvmStatic
     fun listOfImage(context: Context): ArrayList<String> {
         val listOfAllImages = ArrayList<String>()
         var absolutePathOfImage: String
@@ -53,8 +53,8 @@ object ImagesGallery {
         cursor1.close()
 
         return listOfAllImages
-    }
-*/
+    }*/
+
     enum class SortOrder{
         Name,
         Date,
