@@ -2,6 +2,8 @@ package com.example.gallery
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -76,3 +78,4 @@ class FolderFragment : Fragment() {
         binding.folderRecyclerView.adapter = folderRecyclerViewAdapter
     }
 }
+
