@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Gallery-Application/app/src/main/res/drawable/round_corner.xml" value="0.1455" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/fragment_full_image.xml" value="0.19947916666666668" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/full_image_item_layout.xml" value="0.19947916666666668" />
         <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_full_image.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/drawable/custom_button.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/dell7/Desktop/Gallery-Application/app/src/main/res/layout/activity_full_image.xml" value="0.2875905797101449" />
