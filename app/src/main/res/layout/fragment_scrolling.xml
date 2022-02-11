@@ -29,25 +29,18 @@
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:background="@color/black">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/app_name"
-                        android:textColor="@color/white"
-                        android:textSize="25sp"
-                        android:layout_marginTop="12dp"
-                        android:textStyle="bold" />
-
-                </androidx.appcompat.widget.Toolbar>
+                    android:layout_height="wrap_content"
+                    app:title="Snap"
+                    android:background="#004A8C"
+                    app:layout_constraintBottom_toTopOf="@+id/folderRecyclerView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
-                android:background="@color/black"
+                android:background="@drawable/album_bg"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -75,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
-            app:srcCompat="@drawable/camera_icon"
+            app:srcCompat="@drawable/camera_cta"
             app:maxImageSize="34dp"
             app:elevation="100dp"
             app:backgroundTint="@color/transparent"

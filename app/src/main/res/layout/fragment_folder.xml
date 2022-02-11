@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/album_bg"
         tools:context=".FolderFragment">
 
         <androidx.appcompat.widget.Toolbar
@@ -17,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="Snap"
+            android:background="#004A8C"
             app:menu="@menu/sort_menu"
             app:layout_constraintBottom_toTopOf="@+id/folderRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="55dp"
+            android:background="@drawable/album_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
