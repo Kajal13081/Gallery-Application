@@ -1,17 +1,19 @@
 package com.example.gallery
 
 import android.Manifest
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
@@ -37,6 +39,15 @@ class FullImageFragment : Fragment() {
     private var position = 0
     private lateinit var imageLink: String
     private var barsHidden : Boolean = false
+
+    private var favoritePic : Boolean = false
+    private lateinit var externalUri: Uri
+    private lateinit var resolver: ContentResolver
+    private var mediaId : Long = 0L
+    private lateinit var contentUri : Uri
+    private lateinit var menuItem: MenuItem
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -87,9 +98,14 @@ class FullImageFragment : Fragment() {
                     DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
                 }
                 R.id.upload_image->{
-                    uploadToFirebase(imageLink)
+                    uploadToFirebase(imageLink,it)
                     it.setIcon(R.drawable.ic_baseline_cloud_done_24)
                 }
+                R.id.favorite_selector ->
+                {
+                    setFavorite()
+                }
+
             }
                         true
         }
@@ -146,13 +162,119 @@ class FullImageFragment : Fragment() {
     }
 
 
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        resolver = requireContext().contentResolver
+        mediaId = ImageUtil.getFilePathToMediaID(imageLink,requireContext())
+        contentUri = ContentUris.withAppendedId(externalUri,mediaId)
+        menuItem =  binding.bottomNavigation.menu.findItem(R.id.favorite_selector)
+
+
+        if(isFavorite(resolver,contentUri))
+        {
+            favoritePic = true
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
+        }else
+        {
+            favoritePic = false
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
+        }
+
+    }
+
+    /**
+     *This [setFavorite] method set the isFavorite Column in media store to True if it initially False and vice Versa.
+     *
+     */
+    private fun setFavorite()  {
+
+        //Get the current state of the pic , either favorite or not
+        val state = favoritePic
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val pendingIntent =
+                MediaStore.createFavoriteRequest(resolver, arrayListOf(contentUri), !state)
+            startIntentSenderForResult(pendingIntent.intentSender,
+                FAVORITE_REQUEST_CODE, null, 0, 0, 0, null)
+        }
+        //else Is_Favorite Feature is not available below api level 11 , so do nothing or we can show user that this feature is not available
+        else{
+            Toast.makeText(requireContext(),getString(R.string.feature_not_available),Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+
+    /*
+    *Check for result
+     */
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode== FAVORITE_REQUEST_CODE && resultCode== Activity.RESULT_OK){
+            favoritePic = isFavorite(resolver,contentUri)
+        }
+        if(favoritePic)
+        {
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
+        }else
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
+
+    }
+
+
+    /**
+     * This method [isFavorite] checks for the image is marked favorite by user or not
+     * @param[resolver] is a contentResolver
+     * @param[contentUri] is a uri of the image of which we need to check
+     * @return[Boolean] returns whether image is favorite or not
+     * * IS_FAVORITE column on Media is available for api level 30 and above, so the annotation
+     */
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun isFavorite (
+        resolver: ContentResolver,
+        contentUri: Uri,
+    ) : Boolean {
+
+        var flag = false
+        val selection = MediaStore.MediaColumns.IS_FAVORITE + " =?"
+        val selectionArgs = arrayOf("1")
+        val cursor = resolver.query(contentUri, null, selection, selectionArgs, null)
+
+        cursor?.use {
+            if (it.count !=0 && it.count==1) {
+                val columnFavorite =
+                    it.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.IS_FAVORITE)
+                while (it.moveToNext()) {
+                    val fav = it.getInt(columnFavorite)
+                    if(fav ==1)
+                        flag= true
+                }
+            }
+        }
+        return flag
+    }
+
+    companion object{
+        const val FAVORITE_REQUEST_CODE = 1001
+    }
+
+
+
     /**
      * Using Firebase Storage
      * This method upload the file to firebase storage.
      * @param passedUri -> image's Uri as String
      *
      */
-    private fun uploadToFirebase(passedUri : String){
+    private fun uploadToFirebase(passedUri : String, cloudItem: MenuItem){
 
         binding.progressBar.visibility = View.VISIBLE
 
@@ -193,7 +315,7 @@ class FullImageFragment : Fragment() {
         }).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 binding.progressBar.visibility = View.GONE
-
+                cloudItem.setIcon(R.drawable.ic_baseline_cloud_done_24)
                 Snackbar.make(binding.root,getString(R.string.upload_done),Snackbar.LENGTH_LONG)
                     .setAction(R.string.saveUrl){
                         saveUploadedImageUri(task.result.toString())
@@ -210,12 +332,12 @@ class FullImageFragment : Fragment() {
         }?.addOnFailureListener{
             Toast.makeText(requireContext(),getString(R.string.file_upload_failed),Toast.LENGTH_SHORT).show()
             Log.d("myTag","It failed because ${it.message} \n ${it.cause}")
+            cloudItem.setIcon(R.drawable.ic_baseline_cloud_upload_24)
 
         }
 
 
     }
-
 
     //optionally letting user to store the reference in firebase fireStore
     private fun saveUploadedImageUri(firebaseUri : String){

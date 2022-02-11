@@ -24,4 +24,5 @@
     <string name="file_upload_failed">File Upload Failed</string>
     <string name="cancelSnackbar">Cancel</string>
     <string name="upload_done">Successfully Uploaded to Cloud</string>
+    <string name="feature_not_available">This feature is not available on your phone</string>
 </resources>
