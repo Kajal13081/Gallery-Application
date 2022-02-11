@@ -26,15 +26,48 @@
                 android:layout_height="55dp"
                 app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:title="Snap"
-                    android:background="#004A8C"
-                    app:layout_constraintBottom_toTopOf="@+id/folderRecyclerView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#004A8C"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sacramento"
+                        android:text="Snap"
+                        android:textColor="@color/white"
+                        android:textSize="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/logo_view"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.830" />
+
+                    <ImageView
+                        android:id="@+id/logo_view"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/snap"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+                        app:layout_constraintHorizontal_bias="0.328"
+                        app:layout_constraintStart_toStartOf="@+id/toolbar" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </FrameLayout>
 
             <FrameLayout
