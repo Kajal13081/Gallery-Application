@@ -83,6 +83,12 @@ class FullImageFragment : Fragment() {
                     //                // calling startActivity() to share
                     startActivity(Intent.createChooser(intent, "Share Via"))
                 }
+                R.id.Info -> {
+                    //for fragment change "this" to "activity"
+                    val intent = Intent(activity, ImageDescription::class.java)
+                    intent.putExtra("URI", imageLink)
+                    startActivity(intent)
+                }
                 R.id.delete -> {
                     DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
                 }

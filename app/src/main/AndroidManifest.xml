@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -16,11 +16,15 @@
         android:roundIcon="@drawable/snap_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gallery">
-     <!--   <activity
+        <activity
+            android:name=".ImageDescription"
+            android:exported="false" />
+        <!--
+    <activity
             android:name=".MainActivity2"
             android:exported="false" />
-    <activity -->
-
+    <activity
+        -->
         <activity
             android:name=".SplashScreen"
             android:exported="true">
@@ -39,6 +43,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.codepath.fileprovider"
@@ -48,9 +53,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
         </provider>
-
-
-
 
         <meta-data
             android:name="preloaded_fonts"
