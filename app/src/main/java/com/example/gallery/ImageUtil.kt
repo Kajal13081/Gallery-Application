@@ -23,7 +23,7 @@ object ImageUtil {
         activity.startIntentSenderForResult(pendingIntent.intentSender,45,null,0,0,0,null)
     }
 
-    private fun getFilePathToMediaID(imagePath: String, context: Context): Long {
+    fun getFilePathToMediaID(imagePath: String, context: Context): Long {
         var id: Long = 0
         val cr: ContentResolver = context.contentResolver
         val uri = MediaStore.Files.getContentUri("external")
