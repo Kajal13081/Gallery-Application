@@ -6,11 +6,13 @@
     <item android:id="@+id/delete"
         android:title="Delete"
         android:icon="@drawable/ic_delete"/>
+    <item android:id="@+id/Info"
+        android:title="Info"
+        android:icon="@drawable/info"/>
     <item android:id="@+id/upload_image"
             android:title="Upload"
         android:icon="@drawable/ic_baseline_cloud_upload_24"
         />
-
     <item android:id="@+id/favorite_selector"
         android:title="Favorite"
         android:icon="@drawable/ic_baseline_favorite_border_24"
