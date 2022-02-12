@@ -30,6 +30,9 @@
             android:name="img"
             app:argType="string"
             android:defaultValue=" " />
+        <action
+            android:id="@+id/action_fullImageFragment_to_imageDescriptionFragment"
+            app:destination="@id/imageDescriptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/photosFragment"
@@ -51,5 +54,14 @@
         <action
             android:id="@+id/action_folderFragment_to_photosFragment"
             app:destination="@id/photosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageDescriptionFragment"
+        android:name="com.example.gallery.ImageDescriptionFragment"
+        android:label="fragment_image_description"
+        tools:layout="@layout/fragment_image_description">
+        <argument
+            android:name="imageURI"
+            app:argType="string"/>
     </fragment>
 </navigation>

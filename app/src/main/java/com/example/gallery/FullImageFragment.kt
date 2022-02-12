@@ -21,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.gallery.databinding.FragmentFullImageBinding
 import java.io.File
 import com.google.android.gms.tasks.Task
@@ -96,6 +97,9 @@ class FullImageFragment : Fragment() {
                 }
                 R.id.delete -> {
                     DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
+                }
+                R.id.Info -> {
+                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment(imageLink))
                 }
                 R.id.upload_image->{
                     uploadToFirebase(imageLink,it)
