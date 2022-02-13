@@ -3,19 +3,17 @@ package com.example.gallery
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.Image
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.gallery.databinding.FragmentScrollingBinding
 import com.google.android.material.snackbar.Snackbar
 
@@ -147,29 +145,30 @@ class ScrollingFragment : Fragment() {
 
     private fun loadImages(sortOrder: ImagesGallery.SortOrder) {
 
-        Log.i("myTag","This method has been called after permission enabled")
-        binding.photosRecyclerView.setHasFixedSize(true)
-        val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
-        binding.photosRecyclerView.layoutManager = gridLayoutManager
+        binding.photosRecyclerView.setHasFixedSize(false)
+        val staggered = StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL)
+        staggered.gapStrategy  = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+
+        binding.photosRecyclerView.layoutManager = staggered
 
         images = ImagesGallery.listOfSortedImages(requireContext(),sortOrder)
 
         val linearLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.albumRecyclerView.layoutManager = linearLayoutManager
+
         albumRecyclerViewAdapter =
             AlbumRecyclerViewAdapter(AlbumConverter.getAlbum(images), object :
                 AlbumRecyclerViewAdapter.AlbumListener {
                 override fun onAlbumClick(list: List<String>) {
-//                    val bundle = Bundle()
-//                    bundle.putStringArrayList("photos", ArrayList(list))
-//                    PhotosActivity.start(requireContext(), bundle)
                     findNavController().navigate(ScrollingFragmentDirections.actionScrollingFragmentToPhotosFragment(
                         list.toTypedArray()
                     ))
                 }
             })
+
         binding.albumRecyclerView.adapter = albumRecyclerViewAdapter
+
         photosRecyclerViewAdapter = PhotosRecyclerViewAdapter(requireContext(), images, object :
             PhotosRecyclerViewAdapter.PhotoListener {
             override fun onPhotoClick(position: Int) {

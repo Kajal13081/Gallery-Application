@@ -30,9 +30,14 @@
             android:name="img"
             app:argType="string"
             android:defaultValue=" " />
+        <dialog
+            android:id="@+id/bottomSheet"
+            android:name="com.google.android.material.bottomsheet.BottomSheetDialogFragment"
+            tools:layout="@layout/fragment_image_description" />
         <action
-            android:id="@+id/action_fullImageFragment_to_imageDescriptionFragment"
-            app:destination="@id/imageDescriptionFragment" />
+            android:id="@+id/action_fullImageFragment_to_imageDescriptionFragment2"
+            app:destination="@id/imageDescriptionFragment2" />
+
     </fragment>
     <fragment
         android:id="@+id/photosFragment"
@@ -55,13 +60,22 @@
             android:id="@+id/action_folderFragment_to_photosFragment"
             app:destination="@id/photosFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/imageDescriptionFragment"
+
+    <dialog
+        android:id="@+id/imageDescriptionFragment2"
         android:name="com.example.gallery.ImageDescriptionFragment"
-        android:label="fragment_image_description"
-        tools:layout="@layout/fragment_image_description">
+        android:label="ImageDescriptionFragment" >
         <argument
             android:name="imageURI"
             app:argType="string"/>
-    </fragment>
+    </dialog>
+    <!-- <fragment
+         android:id="@+id/imageDescriptionFragment"
+         android:name="com.example.gallery.ImageDescriptionFragment"
+         android:label="fragment_image_description"
+         tools:layout="@layout/fragment_image_description">
+         <argument
+             android:name="imageURI"
+             app:argType="string"/>
+     </fragment>-->
 </navigation>

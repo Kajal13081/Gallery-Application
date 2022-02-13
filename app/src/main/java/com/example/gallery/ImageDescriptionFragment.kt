@@ -10,11 +10,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import com.example.gallery.databinding.FragmentImageDescriptionBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
 import java.util.*
 
 
-class ImageDescriptionFragment : Fragment() {
+class ImageDescriptionFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentImageDescriptionBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
