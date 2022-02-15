@@ -1,6 +1,7 @@
 package com.example.gallery
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,6 +27,8 @@ class PhotosFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
         val args = PhotosFragmentArgs.fromBundle(requireArguments())
         val lst1 = args.lst
+
+
 
         // hiding bottom navigation bar
         (activity as MainActivity).hideBottomNavBar(true)
