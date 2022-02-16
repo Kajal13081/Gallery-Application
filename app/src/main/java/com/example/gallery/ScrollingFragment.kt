@@ -11,10 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.gallery.databinding.FragmentScrollingBinding
+import com.example.gallery.model.ImageAndVideoData
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -23,6 +25,7 @@ class ScrollingFragment : Fragment() {
     private lateinit var photosRecyclerViewAdapter: PhotosRecyclerViewAdapter
     private lateinit var albumRecyclerViewAdapter: AlbumRecyclerViewAdapter
     private lateinit var images: List<String>
+    private lateinit var mediaList : List<ImageAndVideoData>
 
 
     private val requestPermissionLauncher =
@@ -145,31 +148,31 @@ class ScrollingFragment : Fragment() {
 
     private fun loadImages(sortOrder: ImagesGallery.SortOrder) {
 
-        binding.photosRecyclerView.setHasFixedSize(false)
-        val staggered = StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL)
-        staggered.gapStrategy  = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-
-        binding.photosRecyclerView.layoutManager = staggered
+        binding.photosRecyclerView.setHasFixedSize(true)
 
         images = ImagesGallery.listOfSortedImages(requireContext(),sortOrder)
+
+        //loading media both image and video for photo fragment (Change this fragment name now, as it contains both media)
+        mediaList =    ImagesGallery.getMedia(requireContext(),ImagesGallery.SortOrder.Date)
 
         val linearLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.albumRecyclerView.layoutManager = linearLayoutManager
-
         albumRecyclerViewAdapter =
             AlbumRecyclerViewAdapter(AlbumConverter.getAlbum(images), object :
                 AlbumRecyclerViewAdapter.AlbumListener {
                 override fun onAlbumClick(list: List<String>) {
+//                    val bundle = Bundle()
+//                    bundle.putStringArrayList("photos", ArrayList(list))
+//                    PhotosActivity.start(requireContext(), bundle)
                     findNavController().navigate(ScrollingFragmentDirections.actionScrollingFragmentToPhotosFragment(
                         list.toTypedArray()
                     ))
                 }
             })
-
         binding.albumRecyclerView.adapter = albumRecyclerViewAdapter
 
-        photosRecyclerViewAdapter = PhotosRecyclerViewAdapter(requireContext(), images, object :
+        photosRecyclerViewAdapter = PhotosRecyclerViewAdapter( mediaList,object :
             PhotosRecyclerViewAdapter.PhotoListener {
             override fun onPhotoClick(position: Int) {
                 findNavController().navigate(
@@ -180,8 +183,11 @@ class ScrollingFragment : Fragment() {
             }
         })
         binding.photosRecyclerView.adapter = photosRecyclerViewAdapter
-    }
+        val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
+        binding.photosRecyclerView.layoutManager = gridLayoutManager
 
+
+    }
 
 
 }
