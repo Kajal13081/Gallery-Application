@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+
+        <entry key="..\:/Gallery-Application/app/src/main/res/drawable/round_corner.xml" value="0.3145" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/activity_main.xml" value="0.3527777777777778" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/album_view.xml" value="0.36666666666666664" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/folder_view.xml" value="0.36666666666666664" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/fragment_folder.xml" value="0.36666666666666664" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/fragment_full_image.xml" value="0.36666666666666664" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/fragment_photos.xml" value="0.36102564102564105" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/fragment_scrolling.xml" value="0.33" />
+        <entry key="..\:/Gallery-Application/app/src/main/res/layout/photo_view.xml" value="0.36666666666666664" />
         <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/drawable-mdpi/ic_baseline_favorite_24.xml" value="0.1025" />
         <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_folder.xml" value="0.11367753623188406" />
         <entry key="..\:/PIssue/Kajal/Gallery/app/src/main/res/layout/fragment_full_image.xml" value="0.11367753623188406" />
