@@ -22,9 +22,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.example.gallery.databinding.FragmentFullImageBinding
 import java.io.File
 import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -97,9 +101,11 @@ class FullImageFragment : Fragment() {
                 }
                 R.id.delete -> {
                     DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
+
                 }
                 R.id.Info -> {
-                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment(imageLink))
+                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment2(imageLink))
+
                 }
                 R.id.upload_image->{
                     uploadToFirebase(imageLink,it)

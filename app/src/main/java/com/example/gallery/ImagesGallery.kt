@@ -6,6 +6,11 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import android.webkit.MimeTypeMap
+import com.example.gallery.model.ImageAndVideoData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 
@@ -113,73 +118,89 @@ object ImagesGallery {
 
 
     /*
-    *Method [getImages()] to get Images under MediaStore
-    * this method works on all api levels And this method is intended to use in Image Slider feature.
-    * @param  Context - Context of the activity.
-    *         SortOrder - Enum
-    * @return ImageData POJO having name of the image and uri
-    *
-     */
-  /*  @JvmStatic
-    fun getImages(context: Context,sortOrder: SortOrder) : ArrayList<ImageData>{
+*Method [getImages()] to get Images under MediaStore
+* this method works on all api levels And this method is intended to use in Image Slider feature.
+* @param  Context - Context of the activity.
+*         SortOrder - Enum
+* @return ImageData POJO having name of the image and uri
+*
+ */
+    @JvmStatic
+    fun getMedia(context: Context,sortOrder: SortOrder) : ArrayList<ImageAndVideoData>{
 
-        var imageDataList : ArrayList<ImageData> = ArrayList()
+        var imageDataList : ArrayList<ImageAndVideoData> = ArrayList()
         val resolver = context.contentResolver
-        val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME
-        )
-        val external_uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        val external_uri = MediaStore.Files.getContentUri("external")
 
         var orderBy : String?
         when(sortOrder){
             SortOrder.Date -> {
-                orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC"
+                orderBy = MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
             }
             SortOrder.Modified ->{
-                orderBy = MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
+                orderBy = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
             }
             SortOrder.Size ->{
-                orderBy = MediaStore.Images.ImageColumns.SIZE + " DESC"
+                orderBy = MediaStore.Files.FileColumns.SIZE + " DESC"
             }
             else ->{
-                orderBy = MediaStore.Images.ImageColumns.DISPLAY_NAME + " ASC"
+                orderBy = MediaStore.Files.FileColumns.DISPLAY_NAME + " ASC"
             }
         }
 
+        val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " OR "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
 
 
-        val query = resolver.query(external_uri,
-            projection,
-            null,
-            null,
-            orderBy)
+        CoroutineScope(Dispatchers.IO).launch {
 
-        //by using use here, we are sure that cursor will get close (Kotlin feature)
-        query?.use {
-            cursor->
-            //if no error occurred but there is no images then do nothing
-            if(cursor.count!= 0){
-                val columnId = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                val columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
-                while(cursor.moveToNext()){
-                    val imageUri = ContentUris.withAppendedId(external_uri,cursor.getLong(columnId))
-                    val imageName = cursor.getString(columnName)
-                    imageDataList.add(ImageData(imageName,imageUri))
-               }
+            val query = resolver.query(external_uri,
+                null,
+                selection,
+                null,
+                orderBy)
 
+            val imageExtensionList = arrayOf("jpg", "bmp", "png", "jpeg")
+            val videoExtensionList = arrayOf("mp4", "3gp", "gif")
+            //by using use here, we are sure that cursor will get close (Kotlin feature)
+            query?.use { cursor ->
+                //if no error occurred but there is no media then do nothing
+                if (cursor.count != 0) {
+                    val columnId = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                    val columnMimeTypeInfo =
+                        cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+                    val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                    while (cursor.moveToNext()) {
+                        val uri = ContentUris.withAppendedId(external_uri, cursor.getLong(columnId))
+                        val id = cursor.getLong(columnId)
+                        val data = cursor.getString(dataColumn)
+                        val fileExtension = MimeTypeMap.getSingleton()
+                            .getExtensionFromMimeType(cursor.getString(columnMimeTypeInfo))
+
+                        if (imageExtensionList.contains(fileExtension)) {
+                            imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_IMAGE,
+                                id,
+                                uri,
+                                data))
+                        } else if (videoExtensionList.contains(fileExtension)) {
+                            imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_VIDEO,
+                                id,
+                                uri,
+                                data))
+                        }
+
+                    }
+
+                }
             }
         }
-
         return imageDataList
 
     }
 
-    data class ImageData(
-        var imageName : String,
-                var uri : Uri
-    )
-
-*/
 }

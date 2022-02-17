@@ -37,18 +37,20 @@ class PhotosFragment : Fragment() {
         val gridLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 3)
         binding.photosRecyclerView.layoutManager = gridLayoutManager
 
-        binding.photosRecyclerView.adapter =
-            PhotosRecyclerViewAdapter(requireContext(), lst1.toList(), object :
-                PhotosRecyclerViewAdapter.PhotoListener {
-                override fun onPhotoClick(position: Int) {
-                    findNavController().navigate(
-                        PhotosFragmentDirections.actionPhotosFragmentToFullImageFragment(
-                            position,
-                            lst1[position]
-                        )
+        val mediaList = ImagesGallery.getMedia(requireContext(),ImagesGallery.SortOrder.Modified)
+
+        val adapter =    PhotosRecyclerViewAdapter(mediaList ,object :
+            PhotosRecyclerViewAdapter.PhotoListener {
+            override fun onPhotoClick(position: Int) {
+                findNavController().navigate(
+                    PhotosFragmentDirections.actionPhotosFragmentToFullImageFragment(
+                        position,
+                        lst1[position]
                     )
-                }
-            })
+                )
+            }
+        })
+        binding.photosRecyclerView.adapter = adapter
         // Inflate the layout for this fragment
         return binding.root
     }
