@@ -25,6 +25,7 @@
             app:zoomage_translatable="true"
             app:zoomage_minScale="0.6"
             app:zoomage_maxScale="8"
+            android:background="@drawable/ripple"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
