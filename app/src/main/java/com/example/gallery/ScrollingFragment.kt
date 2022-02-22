@@ -177,7 +177,7 @@ class ScrollingFragment : Fragment() {
             override fun onPhotoClick(position: Int) {
                 findNavController().navigate(
                     ScrollingFragmentDirections.actionScrollingFragmentToFullImageFragment(position,
-                        images[position]
+                        mediaList[position].data
                     )
                 )
             }

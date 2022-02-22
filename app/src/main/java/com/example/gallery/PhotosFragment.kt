@@ -45,7 +45,7 @@ class PhotosFragment : Fragment() {
                 findNavController().navigate(
                     PhotosFragmentDirections.actionPhotosFragmentToFullImageFragment(
                         position,
-                        lst1[position]
+                        lst1[position] //<---this line of code needs to be changed to mediaList[position].data , as It is not assigned to me, I am not changing it.
                     )
                 )
             }
