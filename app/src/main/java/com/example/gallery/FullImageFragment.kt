@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -23,8 +24,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager.widget.PagerAdapter
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.example.gallery.databinding.FragmentFullImageBinding
+import com.example.gallery.databinding.ViewpagerItemLayoutBinding
 import java.io.File
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -36,11 +39,13 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
+import com.jsibbold.zoomage.ZoomageView
 import kotlin.collections.HashMap
 
 
 class FullImageFragment : Fragment() {
     private lateinit var binding: FragmentFullImageBinding
+    private lateinit var imageBinding:ViewpagerItemLayoutBinding
     private var position = 0
     private lateinit var imageLink: String
     private var barsHidden : Boolean = false
@@ -60,6 +65,9 @@ class FullImageFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_full_image, container, false
         )
+        imageBinding= DataBindingUtil.inflate(
+            inflater,R.layout.viewpager_item_layout,container,false)
+
         ActivityCompat.requestPermissions(
             requireActivity(),
             arrayOf(
@@ -77,7 +85,7 @@ class FullImageFragment : Fragment() {
         position = args.pos
         imageLink = args.img
 
-        binding.fullimageViewid.setImageURI(Uri.parse(imageLink))
+        imageBinding.fullimageViewid.setImageURI(Uri.parse(imageLink))
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -121,7 +129,7 @@ class FullImageFragment : Fragment() {
         }
 
         val bottomBar = binding.bottomNavigation
-        val fullImage = binding.fullimageViewid
+        val fullImage = imageBinding.fullimageViewid
 
         // OnClickListener for the image
         fullImage.setOnClickListener {
@@ -166,10 +174,24 @@ class FullImageFragment : Fragment() {
                 barsHidden = true;
             }
         }
+        val list= context?.let{
+            ImagesGallery.listOfSortedImages(it,ImagesGallery.SortOrder.Modified)
+        }
+        var currPostition= list?.indexOf(imageLink)
 
+        var imageAdapter= list?.let{
+            currPostition?.let {
+                it1->FullImageAdapter(context,it,imageLink)
+            }
+        }
+
+        binding.viewPager.adapter= imageAdapter
+        list?.let{
+            binding.viewPager.setCurrentItem(it.indexOf(imageLink))
+        }
         // Inflate the layout for this fragment
         return binding.root
-    }
+      }
 
 
 
@@ -376,6 +398,39 @@ class FullImageFragment : Fragment() {
      *      ......    in progress....
      */
 
+    class FullImageAdapter(private var context: Context?, private var imageList:List<String>, private var imageLink:String) : PagerAdapter() {
 
+
+        override fun getCount(): Int {
+            return imageList.size
+        }
+
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+
+
+            val itemLayout = LayoutInflater.from(context)
+                .inflate(R.layout.viewpager_item_layout, container, false)
+
+
+            // Set the images
+            var imageView = itemLayout.findViewById<ZoomageView>(R.id.fullimageViewid)
+            imageView.setImageURI(Uri.parse(imageList[position]))
+
+            // Add view to View Pager
+            container.addView(itemLayout, 0)
+
+            return itemLayout
+        }
+
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            container.removeView(`object` as View?)
+        }
+
+        override fun isViewFromObject(view: View, `object`: Any): Boolean {
+
+            return view == `object`
+        }
+    }
 }
 
