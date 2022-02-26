@@ -144,7 +144,7 @@ class PhotosRecyclerViewAdapter(
             player.setMediaItem(mediaItem)
 
             //this line of code returns error if too many videos are present , so better to avoid prepare
-           // player.prepare()
+            // player.prepare()
             player.playWhenReady=true
             val duration = player.duration
             player.seekTo(duration/2)
