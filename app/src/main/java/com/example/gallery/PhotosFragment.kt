@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gallery.databinding.FragmentPhotosBinding
+import com.example.gallery.model.ImageAndVideoData
 
 class PhotosFragment : Fragment() {
     private lateinit var binding: FragmentPhotosBinding
@@ -38,14 +39,25 @@ class PhotosFragment : Fragment() {
         binding.photosRecyclerView.layoutManager = gridLayoutManager
 
         val mediaList = ImagesGallery.getMedia(requireContext(),ImagesGallery.SortOrder.Modified)
+        //creating  new List
+        val newMediaList = mutableListOf<ImageAndVideoData>()
+        mediaList.forEach { media->
+            lst1.forEach {
+                    imagelink->
+                if(media.data==imagelink)
+                {
+                    newMediaList.add(media)
+                }
+            }
+        }
 
-        val adapter =    PhotosRecyclerViewAdapter(mediaList ,object :
+        val adapter =    PhotosRecyclerViewAdapter(newMediaList ,object :
             PhotosRecyclerViewAdapter.PhotoListener {
             override fun onPhotoClick(position: Int) {
                 findNavController().navigate(
                     PhotosFragmentDirections.actionPhotosFragmentToFullImageFragment(
                         position,
-                        lst1[position] //<---this line of code needs to be changed to mediaList[position].data , as It is not assigned to me, I am not changing it.
+                        newMediaList[position].data
                     )
                 )
             }

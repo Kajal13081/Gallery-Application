@@ -8,18 +8,15 @@ import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.example.gallery.model.ImageAndVideoData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.ArrayList
 
 
 object ImagesGallery {
 
-
-
-   /* @JvmStatic
+    @JvmStatic
     fun listOfImage(context: Context): ArrayList<String> {
+        val cursor: Cursor?
         val listOfAllImages = ArrayList<String>()
         var absolutePathOfImage: String
         val uri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -27,21 +24,46 @@ object ImagesGallery {
             MediaStore.MediaColumns.DATA,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME
         )
+        val orderBy = MediaStore.Video.Media.DATE_TAKEN
+        cursor = context.contentResolver.query(
+            uri, projection, null,
+            null, "$orderBy DESC"
+        )   // cannot use context.contentResolver in fragment
+        val column_index_data: Int = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
 
-        val projection1 = arrayOf(
-            MediaStore.MediaColumns.DATA,
-            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-        )
-        val orderByDate = MediaStore.Images.Media.DATE_TAKEN + " DESC"
-        val orderByName =   MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME + " DESC"
-        val orderByModifiedDate = MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
+        //get folder name
+        //column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+        while (cursor.moveToNext()) {
+            absolutePathOfImage = cursor.getString(column_index_data)
+            listOfAllImages.add(absolutePathOfImage)
+        }
+        return listOfAllImages
+    }
+
+    /* @JvmStatic
+     fun listOfImage(context: Context): ArrayList<String> {
+         val listOfAllImages = ArrayList<String>()
+         var absolutePathOfImage: String
+         val uri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+         val projection = arrayOf(
+             MediaStore.MediaColumns.DATA,
+             MediaStore.Images.Media.BUCKET_DISPLAY_NAME
+         )
+
+         val projection1 = arrayOf(
+             MediaStore.MediaColumns.DATA,
+             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+         )
+         val orderByDate = MediaStore.Images.Media.DATE_TAKEN + " DESC"
+         val orderByName =   MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME + " DESC"
+         val orderByModifiedDate = MediaStore.Images.ImageColumns.DATE_MODIFIED + " DESC"
 
 
 
-        val  cursor1 = context.contentResolver.query(uri,
-            projection1,null, null, orderByName )
+         val  cursor1 = context.contentResolver.query(uri,
+             projection1,null, null, orderByName )
 
-        *//* val orderBy = MediaStore.Video.Media.DATE_TAKEN
+         *//* val orderBy = MediaStore.Video.Media.DATE_TAKEN
          cursor = context.contentResolver.query(
              uri, projection, null,
              null, "$orderBy DESC"
@@ -118,7 +140,7 @@ object ImagesGallery {
 
 
     /*
-*Method [getImages()] to get Images under MediaStore
+*Method [getMedia()] to get media under MediaStore
 * this method works on all api levels And this method is intended to use in Image Slider feature.
 * @param  Context - Context of the activity.
 *         SortOrder - Enum
@@ -126,7 +148,7 @@ object ImagesGallery {
 *
  */
     @JvmStatic
-    fun getMedia(context: Context,sortOrder: SortOrder) : ArrayList<ImageAndVideoData>{
+    fun getMedia(context: Context,sortOrder: SortOrder) : ArrayList<ImageAndVideoData> {
 
         var imageDataList : ArrayList<ImageAndVideoData> = ArrayList()
         val resolver = context.contentResolver
@@ -156,50 +178,49 @@ object ImagesGallery {
                 + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
 
 
-        CoroutineScope(Dispatchers.IO).launch {
 
+        val query = resolver.query(external_uri,
+            null,
+            selection,
+            null,
+            orderBy)
 
-            val query = resolver.query(external_uri,
-                null,
-                selection,
-                null,
-                orderBy)
+        val imageExtensionList = arrayOf("jpg", "bmp", "png", "jpeg")
+        val videoExtensionList = arrayOf("mp4", "3gp", "gif")
+        //by using use here, we are sure that cursor will get close (Kotlin feature)
+        query?.use { cursor ->
+            //if no error occurred but there is no media then do nothing
+            if (cursor.count != 0) {
+                val columnId = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                val columnMimeTypeInfo =
+                    cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+                val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                while (cursor.moveToNext()) {
+                    val uri = ContentUris.withAppendedId(external_uri, cursor.getLong(columnId))
+                    val id = cursor.getLong(columnId)
+                    val data = cursor.getString(dataColumn)
+                    val fileExtension = MimeTypeMap.getSingleton()
+                        .getExtensionFromMimeType(cursor.getString(columnMimeTypeInfo))
 
-            val imageExtensionList = arrayOf("jpg", "bmp", "png", "jpeg")
-            val videoExtensionList = arrayOf("mp4", "3gp", "gif")
-            //by using use here, we are sure that cursor will get close (Kotlin feature)
-            query?.use { cursor ->
-                //if no error occurred but there is no media then do nothing
-                if (cursor.count != 0) {
-                    val columnId = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-                    val columnMimeTypeInfo =
-                        cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
-                    val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-                    while (cursor.moveToNext()) {
-                        val uri = ContentUris.withAppendedId(external_uri, cursor.getLong(columnId))
-                        val id = cursor.getLong(columnId)
-                        val data = cursor.getString(dataColumn)
-                        val fileExtension = MimeTypeMap.getSingleton()
-                            .getExtensionFromMimeType(cursor.getString(columnMimeTypeInfo))
-
-                        if (imageExtensionList.contains(fileExtension)) {
-                            imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_IMAGE,
-                                id,
-                                uri,
-                                data))
-                        } else if (videoExtensionList.contains(fileExtension)) {
-                            imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_VIDEO,
-                                id,
-                                uri,
-                                data))
-                        }
-
+                    if (imageExtensionList.contains(fileExtension)) {
+                        imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_IMAGE,
+                            id,
+                            uri,
+                            data))
+                    } else if (videoExtensionList.contains(fileExtension)) {
+                        imageDataList.add(ImageAndVideoData(ITEM_VIEW_TYPE_VIDEO,
+                            id,
+                            uri,
+                            data))
                     }
 
                 }
+
             }
         }
-        return imageDataList
+
+
+        return    imageDataList
 
     }
 
