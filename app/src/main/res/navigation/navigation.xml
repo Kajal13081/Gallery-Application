@@ -12,13 +12,10 @@
         tools:layout = "@layout/fragment_scrolling">
         <action
             android:id="@+id/action_scrollingFragment_to_fullImageFragment"
-            app:destination="@id/fullImageFragment"
-            app:enterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out" />
+            app:destination="@id/fullImageFragment" />
         <action
             android:id="@+id/action_scrollingFragment_to_photosFragment"
-            app:destination="@id/photosFragment"
-            app:enterAnim="@anim/fade_in" />
+            app:destination="@id/photosFragment" />
     </fragment>
     <fragment
         android:id="@+id/fullImageFragment"
@@ -54,9 +51,7 @@
             app:argType="string[]" />
         <action
             android:id="@+id/action_photosFragment_to_fullImageFragment"
-            app:destination="@id/fullImageFragment"
-            app:enterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out" />
+            app:destination="@id/fullImageFragment" />
     </fragment>
     <fragment
         android:id="@+id/folderFragment"
@@ -65,8 +60,7 @@
         tools:layout="@layout/fragment_folder">
         <action
             android:id="@+id/action_folderFragment_to_photosFragment"
-            app:destination="@id/photosFragment"
-            app:enterAnim="@anim/fade_in" />
+            app:destination="@id/photosFragment" />
     </fragment>
 
     <dialog
