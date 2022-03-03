@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.example.gallery.databinding.FragmentFullImageBinding
 import com.example.gallery.databinding.ViewpagerItemLayoutBinding
@@ -43,7 +44,7 @@ import com.jsibbold.zoomage.ZoomageView
 import kotlin.collections.HashMap
 
 
-class FullImageFragment : Fragment() {
+class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
     private lateinit var binding: FragmentFullImageBinding
     private lateinit var imageBinding:ViewpagerItemLayoutBinding
     private var position = 0
@@ -92,7 +93,7 @@ class FullImageFragment : Fragment() {
                 R.id.nav_share -> {
                     val intent = Intent(Intent.ACTION_SEND)
 
-                    val file = File(Uri.parse(imageLink).path)
+                    val file = File(Uri.parse(FullImageAdapter.currImage).path)
                     val uri = FileProvider.getUriForFile(requireContext(),
                         "com.codepath.fileprovider",
                         file)
@@ -108,15 +109,15 @@ class FullImageFragment : Fragment() {
                     startActivity(Intent.createChooser(intent, "Share Via"))
                 }
                 R.id.delete -> {
-                    DeletePhotoDialog.create(imageLink).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
+                    DeletePhotoDialog.create(FullImageAdapter.currImage).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
 
                 }
                 R.id.Info -> {
-                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment2(imageLink))
+                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment2(FullImageAdapter.currImage))
 
                 }
                 R.id.upload_image->{
-                    uploadToFirebase(imageLink,it)
+                    uploadToFirebase(FullImageAdapter.currImage,it)
                     it.setIcon(R.drawable.ic_baseline_cloud_done_24)
                 }
                 R.id.favorite_selector ->
@@ -181,7 +182,7 @@ class FullImageFragment : Fragment() {
 
         var imageAdapter= list?.let{
             currPostition?.let {
-                it1->FullImageAdapter(context,it,imageLink)
+                it1->FullImageAdapter(context,it)
             }
         }
 
@@ -189,6 +190,7 @@ class FullImageFragment : Fragment() {
         list?.let{
             binding.viewPager.setCurrentItem(it.indexOf(imageLink))
         }
+
         // Inflate the layout for this fragment
         return binding.root
       }
@@ -198,7 +200,7 @@ class FullImageFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+       // imageLink= FullImageAdapter.currImage
         externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         resolver = requireContext().contentResolver
         mediaId = ImageUtil.getFilePathToMediaID(imageLink,requireContext())
@@ -398,8 +400,11 @@ class FullImageFragment : Fragment() {
      *      ......    in progress....
      */
 
-    class FullImageAdapter(private var context: Context?, private var imageList:List<String>, private var imageLink:String) : PagerAdapter() {
+    class FullImageAdapter(private var context: Context?, private var imageList:List<String>) : PagerAdapter() {
 
+        companion object{
+            lateinit var currImage:String
+        }
 
         override fun getCount(): Int {
             return imageList.size
@@ -417,6 +422,13 @@ class FullImageFragment : Fragment() {
             var imageView = itemLayout.findViewById<ZoomageView>(R.id.fullimageViewid)
             imageView.setImageURI(Uri.parse(imageList[position]))
 
+            var currPos= if(position==imageList.size-1 || position==0)
+                            position
+                         else
+                             position-1
+
+            currImage= imageList[currPos]
+
             // Add view to View Pager
             container.addView(itemLayout, 0)
 
@@ -431,6 +443,35 @@ class FullImageFragment : Fragment() {
 
             return view == `object`
         }
+    }
+
+
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        TODO("Not yet implemented")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onPageSelected(position: Int) {
+        TODO("Not yet implemented")
+        mediaId = ImageUtil.getFilePathToMediaID(FullImageAdapter.currImage,requireContext())
+        contentUri = ContentUris.withAppendedId(externalUri,mediaId)
+
+        if(isFavorite(resolver,contentUri))
+        {
+            favoritePic = true
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
+        }else
+        {
+            favoritePic = false
+            menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
+        }
+
+        // Here we have to check whether the image is already uploaded or not then we have to set icon accordingly
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+        TODO("Not yet implemented")
     }
 }
 
