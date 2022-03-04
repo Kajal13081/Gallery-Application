@@ -2,6 +2,8 @@ package com.example.gallery
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
@@ -10,11 +12,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
@@ -23,16 +28,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.example.gallery.databinding.FragmentFullImageBinding
 import com.example.gallery.databinding.ViewpagerItemLayoutBinding
 import java.io.File
 import com.google.android.gms.tasks.Task
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -41,23 +42,45 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.ktx.storageMetadata
 import com.jsibbold.zoomage.ZoomageView
+import ly.img.android.pesdk.PhotoEditorSettingsList
+import ly.img.android.pesdk.assets.filter.basic.FilterPackBasic
+import ly.img.android.pesdk.assets.font.basic.FontPackBasic
+import ly.img.android.pesdk.assets.frame.basic.FramePackBasic
+import ly.img.android.pesdk.assets.overlay.basic.OverlayPackBasic
+import ly.img.android.pesdk.assets.sticker.emoticons.StickerPackEmoticons
+import ly.img.android.pesdk.assets.sticker.shapes.StickerPackShapes
+import ly.img.android.pesdk.backend.model.EditorSDKResult
+import ly.img.android.pesdk.backend.model.state.LoadSettings
+import ly.img.android.pesdk.backend.model.state.PhotoEditorSaveSettings
+import ly.img.android.pesdk.ui.activity.PhotoEditorBuilder
+import ly.img.android.pesdk.ui.model.state.*
+import ly.img.android.serializer._3.IMGLYFileWriter
+import java.io.IOException
+import java.net.URI
 import kotlin.collections.HashMap
 
 
-class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
+class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener {
+
     private lateinit var binding: FragmentFullImageBinding
-    private lateinit var imageBinding:ViewpagerItemLayoutBinding
+    private lateinit var imageBinding: ViewpagerItemLayoutBinding
     private var position = 0
     private lateinit var imageLink: String
-    private var barsHidden : Boolean = false
-
-    private var favoritePic : Boolean = false
+    private var barsHidden: Boolean = false
+    private lateinit var editorUri: Uri
+    private var favoritePic: Boolean = false
+    private lateinit var imageAdapter:FullImageAdapter
     private lateinit var externalUri: Uri
     private lateinit var resolver: ContentResolver
-    private var mediaId : Long = 0L
-    private lateinit var contentUri : Uri
+    private var mediaId: Long = 0L
+    private lateinit var contentUri: Uri
     private lateinit var menuItem: MenuItem
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,8 +89,12 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_full_image, container, false
         )
-        imageBinding= DataBindingUtil.inflate(
-            inflater,R.layout.viewpager_item_layout,container,false)
+
+        (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolbar)
+
+        imageBinding = DataBindingUtil.inflate(
+            inflater, R.layout.viewpager_item_layout, container, false
+        )
 
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -88,18 +115,21 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
 
         imageBinding.fullimageViewid.setImageURI(Uri.parse(imageLink))
 
+
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_share -> {
                     val intent = Intent(Intent.ACTION_SEND)
 
                     val file = File(Uri.parse(FullImageAdapter.currImage).path)
-                    val uri = FileProvider.getUriForFile(requireContext(),
+                    val uri = FileProvider.getUriForFile(
+                        requireContext(),
                         "com.codepath.fileprovider",
-                        file)
+                        file
+                    )
                     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 
-                    intent.putExtra(Intent.EXTRA_STREAM,uri )
+                    intent.putExtra(Intent.EXTRA_STREAM, uri)
                     //                // adding text to share
                     //                // Add subject Here
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Shared using Snap!!")
@@ -109,24 +139,28 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
                     startActivity(Intent.createChooser(intent, "Share Via"))
                 }
                 R.id.delete -> {
-                    DeletePhotoDialog.create(FullImageAdapter.currImage).show((activity as MainActivity).supportFragmentManager,"DELETE_IMAGE")
+                    DeletePhotoDialog.create(FullImageAdapter.currImage)
+                        .show((activity as MainActivity).supportFragmentManager, "DELETE_IMAGE")
 
                 }
                 R.id.Info -> {
-                    findNavController().navigate(FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment2(FullImageAdapter.currImage))
+                    findNavController().navigate(
+                        FullImageFragmentDirections.actionFullImageFragmentToImageDescriptionFragment2(
+                            FullImageAdapter.currImage
+                        )
+                    )
 
                 }
-                R.id.upload_image->{
-                    uploadToFirebase(FullImageAdapter.currImage,it)
+                R.id.upload_image -> {
+                    uploadToFirebase(FullImageAdapter.currImage, it)
                     it.setIcon(R.drawable.ic_baseline_cloud_done_24)
                 }
-                R.id.favorite_selector ->
-                {
+                R.id.favorite_selector -> {
                     setFavorite()
                 }
 
             }
-                        true
+            true
         }
 
         val bottomBar = binding.bottomNavigation
@@ -135,85 +169,107 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
         // OnClickListener for the image
         fullImage.setOnClickListener {
             // If bars are already hidden then make them appear
-            if(barsHidden)
-            {
+            if (barsHidden) {
                 bottomBar.animate().translationY(0F)
 
-               //as Flag is deprecated
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                //as Flag is deprecated
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     activity?.window?.let { WindowCompat.setDecorFitsSystemWindows(it, false) }
                     val windowInsetsController =
                         activity?.window?.let { ViewCompat.getWindowInsetsController(it.decorView) }
                             ?: return@setOnClickListener
                     // Hide both the status bar and the navigation bar
                     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-                }
-                else
-                (activity as MainActivity).window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                } else
+                    (activity as MainActivity).window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
                 barsHidden = false
             }
 
             // If bars are not hidden then hide them
-            else
-            {
+            else {
                 bottomBar.animate().translationY(bottomBar.height.toFloat())
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     activity?.window?.let {
-                        WindowCompat.setDecorFitsSystemWindows(it,true)
+                        WindowCompat.setDecorFitsSystemWindows(it, true)
                     }
                     val windowInsetsController =
-                        activity?.window?.let { ViewCompat.getWindowInsetsController(it.decorView) } ?:return@setOnClickListener
+                        activity?.window?.let { ViewCompat.getWindowInsetsController(it.decorView) }
+                            ?: return@setOnClickListener
                     // show both the status bar and the navigation bar
                     windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
 
-                }
-                else
-                (activity as MainActivity).window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                } else
+                    (activity as MainActivity).window.setFlags(
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    )
 
                 barsHidden = true;
             }
         }
-        val list= context?.let{
-            ImagesGallery.listOfSortedImages(it,ImagesGallery.SortOrder.Modified)
+        val list = context?.let {
+            ImagesGallery.listOfSortedImages(it, ImagesGallery.SortOrder.Modified)
         }
-        var currPostition= list?.indexOf(imageLink)
+        var currPostition = list?.indexOf(imageLink)
 
-        var imageAdapter= list?.let{
-            currPostition?.let {
-                it1->FullImageAdapter(context,it)
+        imageAdapter = list?.let {
+            currPostition?.let { it1 ->
+                FullImageAdapter(context, it, this)
             }
-        }
+        }!!
 
-        binding.viewPager.adapter= imageAdapter
-        list?.let{
+        binding.viewPager.adapter = imageAdapter
+        binding.viewPager.offscreenPageLimit = 0
+        list?.let {
             binding.viewPager.setCurrentItem(it.indexOf(imageLink))
         }
 
         // Inflate the layout for this fragment
         return binding.root
-      }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.full_image_toolbar_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+
+            R.id.edit -> {
+                Toast.makeText(context, "You selected edit", Toast.LENGTH_SHORT).show()
+               /// editorUri = Uri.parse(imageLink)
+                 editorUri= Uri.parse(FullImageAdapter.currImage)
+                openEditor(editorUri)
+
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+
+        }
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // imageLink= FullImageAdapter.currImage
+        // imageLink= FullImageAdapter.currImage
         externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         resolver = requireContext().contentResolver
-        mediaId = ImageUtil.getFilePathToMediaID(imageLink,requireContext())
-        contentUri = ContentUris.withAppendedId(externalUri,mediaId)
-        menuItem =  binding.bottomNavigation.menu.findItem(R.id.favorite_selector)
+        mediaId = ImageUtil.getFilePathToMediaID(imageLink, requireContext())
+        contentUri = ContentUris.withAppendedId(externalUri, mediaId)
+        menuItem = binding.bottomNavigation.menu.findItem(R.id.favorite_selector)
 
 
-        if(isFavorite(resolver,contentUri))
-        {
+        if (isFavorite(resolver, contentUri)) {
             favoritePic = true
             menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
-        }else
-        {
+        } else {
             favoritePic = false
             menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
         }
@@ -224,7 +280,7 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
      *This [setFavorite] method set the isFavorite Column in media store to True if it initially False and vice Versa.
      *
      */
-    private fun setFavorite()  {
+    private fun setFavorite() {
 
         //Get the current state of the pic , either favorite or not
         val state = favoritePic
@@ -232,12 +288,18 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val pendingIntent =
                 MediaStore.createFavoriteRequest(resolver, arrayListOf(contentUri), !state)
-            startIntentSenderForResult(pendingIntent.intentSender,
-                FAVORITE_REQUEST_CODE, null, 0, 0, 0, null)
+            startIntentSenderForResult(
+                pendingIntent.intentSender,
+                FAVORITE_REQUEST_CODE, null, 0, 0, 0, null
+            )
         }
         //else Is_Favorite Feature is not available below api level 11 , so do nothing or we can show user that this feature is not available
-        else{
-            Toast.makeText(requireContext(),getString(R.string.feature_not_available),Toast.LENGTH_SHORT).show()
+        else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.feature_not_available),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
     }
@@ -251,14 +313,45 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode== FAVORITE_REQUEST_CODE && resultCode== Activity.RESULT_OK){
-            favoritePic = isFavorite(resolver,contentUri)
+        if (requestCode == FAVORITE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            favoritePic = isFavorite(resolver, contentUri)
         }
-        if(favoritePic)
-        {
+        if (favoritePic) {
             menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
-        }else
+        } else
             menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
+
+        // Code for photo editing
+        if (resultCode == RESULT_OK && requestCode == PESDK_RESULT) {
+            // Editor has saved an Image.
+            val data = data?.let { EditorSDKResult(it) }
+
+            Log.i("PESDK", "Source image is located here ${data?.sourceUri}")
+            Log.i("PESDK", "Result image is located here ${data?.resultUri}")
+
+            // TODO: Do something with the result image
+
+              // OPTIONAL: read the latest state to save it as a serialisation
+            val lastState = data?.settingsList
+            try {
+                if (lastState != null) {
+                    IMGLYFileWriter(lastState).writeJson(File(
+                       // getExternalFilesDir(null),
+                        requireContext().getExternalFilesDir(null),
+                        "serialisationReadyToReadWithPESDKFileReader.json"
+                    ))
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        } else if (resultCode == RESULT_CANCELED && requestCode == PESDK_RESULT) {
+            // Editor was canceled
+            val data1 = data?.let { EditorSDKResult(it) }
+
+            val sourceURI = data1?.sourceUri
+            // TODO: Do something with the source...
+        }
 
     }
 
@@ -272,10 +365,10 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
      */
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun isFavorite (
+    private fun isFavorite(
         resolver: ContentResolver,
         contentUri: Uri,
-    ) : Boolean {
+    ): Boolean {
 
         var flag = false
         val selection = MediaStore.MediaColumns.IS_FAVORITE + " =?"
@@ -283,195 +376,267 @@ class FullImageFragment : Fragment(),ViewPager.OnPageChangeListener{
         val cursor = resolver.query(contentUri, null, selection, selectionArgs, null)
 
         cursor?.use {
-            if (it.count !=0 && it.count==1) {
+            if (it.count != 0 && it.count == 1) {
                 val columnFavorite =
                     it.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.IS_FAVORITE)
                 while (it.moveToNext()) {
                     val fav = it.getInt(columnFavorite)
-                    if(fav ==1)
-                        flag= true
+                    if (fav == 1)
+                        flag = true
                 }
             }
         }
         return flag
     }
 
-    companion object{
+    companion object {
         const val FAVORITE_REQUEST_CODE = 1001
+        const val PESDK_RESULT = 1
+        const val GALLERY_RESULT = 2
     }
 
+    // Create a empty new SettingsList and apply the changes on this reference.
+    // If you include our asset Packs and use our UI you also need to add them to the UI Config,
+    // otherwise they are only available for the backend (like Serialisation)
+    // See the specific feature sections of our guides if you want to know how to add your own Assets.
+    private fun createPESDKSettingsList() =
+        PhotoEditorSettingsList()
+            .configure<UiConfigFilter> {
+                it.setFilterList(FilterPackBasic.getFilterPack())
+            }
+            .configure<UiConfigText> {
+                it.setFontList(FontPackBasic.getFontPack())
+            }
+            .configure<UiConfigFrame> {
+                it.setFrameList(FramePackBasic.getFramePack())
+            }
+            .configure<UiConfigOverlay> {
+                it.setOverlayList(OverlayPackBasic.getOverlayPack())
+            }
+            .configure<UiConfigSticker> {
+                it.setStickerLists(
+                    StickerPackEmoticons.getStickerCategory(),
+                    StickerPackShapes.getStickerCategory()
+                )
+            }
+            .configure<PhotoEditorSaveSettings> {
+                it.setOutputToGallery(Environment.DIRECTORY_DCIM)
+            }
 
+    fun openEditor(inputImage: Uri?) {
+        val settingsList = createPESDKSettingsList()
 
-    /**
-     * Using Firebase Storage
-     * This method upload the file to firebase storage.
-     * @param passedUri -> image's Uri as String
-     *
-     */
-    private fun uploadToFirebase(passedUri : String, cloudItem: MenuItem){
-
-        binding.progressBar.visibility = View.VISIBLE
-
-        //making File , as it is already added File will not create it.
-        val file = File(Uri.parse(passedUri).path)
-
-        //using provider to get the Uri in the format "content://...." necessary for firebase
-
-        val fileUri = FileProvider.getUriForFile(
-            requireContext(),
-            "com.codepath.fileprovider",
-            file)
-
-
-        //getting the mimeType
-        val mimeType = requireActivity().contentResolver.getType(fileUri)
-
-
-        val metadata = storageMetadata {
-            contentType = mimeType
+        settingsList.configure<LoadSettings> {
+            Log.d("Input Image", imageLink)
+            it.source = inputImage
         }
 
-        val storage = Firebase.storage
-        val storageRef = storage.reference
+        PhotoEditorBuilder(activity)
+            .setSettingsList(settingsList)
+            .startActivityForResult(this, PESDK_RESULT)
+        activity?.let {
+            /*    PhotoEditorBuilder(activity)
+                .setSettingsList(settingsList)
+                .startActivityForResult(it, PESDK_RESULT)
+        }*/
+        }
+    }
 
-        val ref : StorageReference = storageRef.child("upload/"+ System.currentTimeMillis().toString())
+        /**
+         * Using Firebase Storage
+         * This method upload the file to firebase storage.
+         * @param passedUri -> image's Uri as String
+         *
+         */
+        private fun uploadToFirebase(passedUri: String, cloudItem: MenuItem) {
 
-        //uploading file with metadata
-        val uploadTask = ref.putFile(fileUri,metadata)
+            binding.progressBar.visibility = View.VISIBLE
 
-        uploadTask.continueWithTask(com.google.android.gms.tasks.Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
-                }
+            //making File , as it is already added File will not create it.
+            val file = File(Uri.parse(passedUri).path)
+
+            //using provider to get the Uri in the format "content://...." necessary for firebase
+
+            val fileUri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.codepath.fileprovider",
+                file
+            )
+
+
+            //getting the mimeType
+            val mimeType = requireActivity().contentResolver.getType(fileUri)
+
+
+            val metadata = storageMetadata {
+                contentType = mimeType
             }
-            return@Continuation ref.downloadUrl
-        }).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                binding.progressBar.visibility = View.GONE
-                cloudItem.setIcon(R.drawable.ic_baseline_cloud_done_24)
-                Snackbar.make(binding.root,getString(R.string.upload_done),Snackbar.LENGTH_LONG)
-                    .setAction(R.string.saveUrl){
-                        saveUploadedImageUri(task.result.toString())
+
+            val storage = Firebase.storage
+            val storageRef = storage.reference
+
+            val ref: StorageReference =
+                storageRef.child("upload/" + System.currentTimeMillis().toString())
+
+            //uploading file with metadata
+            val uploadTask = ref.putFile(fileUri, metadata)
+
+            uploadTask.continueWithTask(com.google.android.gms.tasks.Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
                     }
-                    .show()
+                }
+                return@Continuation ref.downloadUrl
+            }).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    binding.progressBar.visibility = View.GONE
+                    cloudItem.setIcon(R.drawable.ic_baseline_cloud_done_24)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.upload_done),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(R.string.saveUrl) {
+                            saveUploadedImageUri(task.result.toString())
+                        }
+                        .show()
 
 
-            } else {
-                Log.d("myTag","Failed uploading ")
-                // Handle failures
+                } else {
+                    Log.d("myTag", "Failed uploading ")
+                    // Handle failures
+                }
+
+
+            }?.addOnFailureListener {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.file_upload_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.d("myTag", "It failed because ${it.message} \n ${it.cause}")
+                cloudItem.setIcon(R.drawable.ic_baseline_cloud_upload_24)
+
             }
 
-
-        }?.addOnFailureListener{
-            Toast.makeText(requireContext(),getString(R.string.file_upload_failed),Toast.LENGTH_SHORT).show()
-            Log.d("myTag","It failed because ${it.message} \n ${it.cause}")
-            cloudItem.setIcon(R.drawable.ic_baseline_cloud_upload_24)
 
         }
 
+        //optionally letting user to store the reference in firebase fireStore
+        private fun saveUploadedImageUri(firebaseUri: String) {
 
-    }
+            val dataToSave = HashMap<String, String>()
+            dataToSave["imageUrl"] = firebaseUri
 
-    //optionally letting user to store the reference in firebase fireStore
-    private fun saveUploadedImageUri(firebaseUri : String){
+            val db = Firebase.firestore
 
-        val dataToSave = HashMap<String,String>()
-        dataToSave["imageUrl"] = firebaseUri
+            db.collection("uploads")
+                .add(dataToSave)
+                .addOnSuccessListener { docRef ->
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.ref_store),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
 
-        val db = Firebase.firestore
+                .addOnFailureListener {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.ref_store_failed),
+                        Toast.LENGTH_LONG
+                    ).show()
 
-        db.collection("uploads")
-            .add(dataToSave)
-            .addOnSuccessListener {
-                docRef->
-            Toast.makeText(requireContext(),getString(R.string.ref_store),Toast.LENGTH_LONG).show()
-            }
+                }
 
-            .addOnFailureListener{
-                Toast.makeText(requireContext(),getString(R.string.ref_store_failed),Toast.LENGTH_LONG).show()
-
-            }
-
-    }
+        }
 
 //function to verify if file is already uploaded or not , if it already uploaded item icon will get change.
-    /***
-     *      ......    in progress....
-     */
+        /***
+         *      ......    in progress....
+         */
 
-    class FullImageAdapter(private var context: Context?, private var imageList:List<String>) : PagerAdapter() {
+        class FullImageAdapter(
+            private var context: Context?,
+            private var imageList: List<String>,
+            var fragment: FullImageFragment
+        ) : PagerAdapter() {
 
-        companion object{
-            lateinit var currImage:String
+            companion object {
+                lateinit var currImage: String
+            }
+
+            override fun getCount(): Int {
+                return imageList.size
+            }
+
+
+            override fun instantiateItem(container: ViewGroup, position: Int): Any {
+
+
+                val itemLayout = LayoutInflater.from(context)
+                    .inflate(R.layout.viewpager_item_layout, container, false)
+
+
+                // Set the images
+                var imageView = itemLayout.findViewById<ZoomageView>(R.id.fullimageViewid)
+                //  var editButton= itemLayout.findViewById<Button>(R.id.image_edit)
+                imageView.setImageURI(Uri.parse(imageList[position]))
+
+                var currPos = if (position == imageList.size - 1 || position == 0)
+                    position
+                else
+                    position - 1
+
+                currImage = imageList[currPos]
+
+                // Add view to View Pager
+                container.addView(itemLayout, 0)
+
+                return itemLayout
+            }
+
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                container.removeView(`object` as View?)
+            }
+
+            override fun isViewFromObject(view: View, `object`: Any): Boolean {
+
+                return view == `object`
+            }
         }
 
-        override fun getCount(): Int {
-            return imageList.size
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+            TODO("Not yet implemented")
         }
 
+        @RequiresApi(Build.VERSION_CODES.R)
+        override fun onPageSelected(position: Int) {
+            TODO("Not yet implemented")
+            mediaId = ImageUtil.getFilePathToMediaID(FullImageAdapter.currImage, requireContext())
+            contentUri = ContentUris.withAppendedId(externalUri, mediaId)
 
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            if (isFavorite(resolver, contentUri)) {
+                favoritePic = true
+                menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
+            } else {
+                favoritePic = false
+                menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
+            }
 
-
-            val itemLayout = LayoutInflater.from(context)
-                .inflate(R.layout.viewpager_item_layout, container, false)
-
-
-            // Set the images
-            var imageView = itemLayout.findViewById<ZoomageView>(R.id.fullimageViewid)
-            imageView.setImageURI(Uri.parse(imageList[position]))
-
-            var currPos= if(position==imageList.size-1 || position==0)
-                            position
-                         else
-                             position-1
-
-            currImage= imageList[currPos]
-
-            // Add view to View Pager
-            container.addView(itemLayout, 0)
-
-            return itemLayout
+            // Here we have to check whether the image is already uploaded or not then we have to set icon accordingly
         }
 
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            container.removeView(`object` as View?)
+        override fun onPageScrollStateChanged(state: Int) {
+            TODO("Not yet implemented")
         }
-
-        override fun isViewFromObject(view: View, `object`: Any): Boolean {
-
-            return view == `object`
-        }
-    }
-
-
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        TODO("Not yet implemented")
-    }
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    override fun onPageSelected(position: Int) {
-        TODO("Not yet implemented")
-        mediaId = ImageUtil.getFilePathToMediaID(FullImageAdapter.currImage,requireContext())
-        contentUri = ContentUris.withAppendedId(externalUri,mediaId)
-
-        if(isFavorite(resolver,contentUri))
-        {
-            favoritePic = true
-            menuItem.setIcon(R.drawable.ic_baseline_favorite_24)
-        }else
-        {
-            favoritePic = false
-            menuItem.setIcon(R.drawable.ic_baseline_favorite_border_24)
-        }
-
-        // Here we have to check whether the image is already uploaded or not then we have to set icon accordingly
-    }
-
-    override fun onPageScrollStateChanged(state: Int) {
-        TODO("Not yet implemented")
-    }
 }
+
+
 
