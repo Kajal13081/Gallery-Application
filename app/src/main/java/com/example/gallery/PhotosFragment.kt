@@ -51,6 +51,8 @@ class PhotosFragment : Fragment() {
             }
         }
 
+        binding.back.setOnClickListener { requireActivity().onBackPressed() }
+
         val adapter =    PhotosRecyclerViewAdapter(newMediaList ,object :
             PhotosRecyclerViewAdapter.PhotoListener {
             override fun onPhotoClick(position: Int) {
