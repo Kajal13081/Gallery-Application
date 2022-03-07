@@ -1,23 +1,33 @@
 package com.example.gallery
 
 import android.Manifest
+import android.R.attr.bitmap
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.gallery.databinding.FragmentScrollingBinding
 import com.example.gallery.model.ImageAndVideoData
 import com.google.android.material.snackbar.Snackbar
+import java.io.File
+import java.io.OutputStream
+import java.util.*
 
 
 class ScrollingFragment : Fragment() {
@@ -26,7 +36,7 @@ class ScrollingFragment : Fragment() {
     private lateinit var albumRecyclerViewAdapter: AlbumRecyclerViewAdapter
     private lateinit var images: List<String>
     private lateinit var mediaList : List<ImageAndVideoData>
-
+    private val cameraRequestId = 1222
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()){
@@ -114,7 +124,7 @@ class ScrollingFragment : Fragment() {
     private fun showImages() {
         if(ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
             loadImages(ImagesGallery.SortOrder.Modified)
-        //    ImagesGallery.getImages(requireContext(),ImagesGallery.SortOrder.Date)
+            //    ImagesGallery.getImages(requireContext(),ImagesGallery.SortOrder.Date)
         }
         else
             requestReadPermission()
@@ -140,7 +150,40 @@ class ScrollingFragment : Fragment() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Check if there exists an Activity to handle the intent, if yes, then send the intent for opening camera
         if (activity?.let { it1 -> intent.resolveActivity(it1.packageManager) } != null) {
-            startActivity(intent)
+            startActivityForResult(intent, cameraRequestId)
+        }
+    }
+
+    override fun onActivityResult (requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == cameraRequestId) {
+            /**save to Image In layout*/
+            val images: Bitmap = data?.extras?.get("data") as Bitmap
+            // myImage.setImageBitmap(images)
+
+
+            val fos: OutputStream
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val resolver: ContentResolver = requireContext().getContentResolver()
+                    val contentValues = ContentValues()
+                    contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "Image_" + ".jpg")
+                    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+                    contentValues.put(
+                        MediaStore.MediaColumns.RELATIVE_PATH,
+                        Environment.DIRECTORY_PICTURES + File.separator.toString() + "TestFolder"
+                    )
+                    val imageUri: Uri? =
+                        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    fos = Objects.requireNonNull(imageUri)?.let { resolver.openOutputStream(it) }!!
+                    images.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    Objects.requireNonNull(fos)
+                    Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Image not saved \n$e", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
