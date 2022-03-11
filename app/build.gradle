@@ -3,11 +3,15 @@ plugins {
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
+    id 'ly.img.android.sdk'
+
 }
+
+
 
 android {
     compileSdk 31
-
+    //buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.example.gallery"
         minSdk 21
@@ -16,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //renderscriptTargetApi 21
+        //renderscriptSupportModeEnabled true
     }
 
     buildTypes {
@@ -78,7 +85,49 @@ dependencies {
 
     //LottieFiles Animated SplashScreen
     implementation 'com.airbnb.android:lottie:4.2.2'
+
+    //implementation(name:'ds-photo-editor-sdk', ext:'aar')
+
 }
+// Configure the img.ly plugin
+imglyConfig {
+
+    pesdk {
+        enabled true
+       // licensePath 'pesdk_android_license' // set `null` for free trial
+        licensePath null
+    }
+
+    // Define the modules you are need
+    modules {
+        // Add all the UI modules you are need
+        include 'ui:core'
+        include 'ui:text'
+        include 'ui:focus'
+        include 'ui:frame'
+        include 'ui:brush'
+        include 'ui:filter'
+        include 'ui:camera'
+        include 'ui:sticker'
+        include 'ui:overlay'
+        include 'ui:transform'
+        include 'ui:adjustment'
+        include 'ui:text-design'
+
+
+        // Add the serializer if you need
+        include 'backend:serializer'
+
+        // Add asset packs if you need
+        include 'assets:font-basic'
+        include 'assets:frame-basic'
+        include 'assets:filter-basic'
+        include 'assets:overlay-basic'
+        include 'assets:sticker-shapes'
+        include 'assets:sticker-emoticons'
+    }
+}
+/*
 repositories {
     mavenCentral()
-}
+}*/
